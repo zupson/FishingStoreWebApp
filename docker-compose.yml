@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17
+    container_name: fishingStore-db
+    environment:
+      POSTGRES_DB: fishingStore
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Password123
+    ports:
+      - "5555:5432" #PPORT NA MOM RACUNALU(moze bilokoji slobodan port) : PORT UNUTAR DOCKER CONTAINERA(uvjek mora biti 5432)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
