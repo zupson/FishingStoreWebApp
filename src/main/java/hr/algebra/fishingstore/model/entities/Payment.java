@@ -1,5 +1,6 @@
 package hr.algebra.fishingstore.model.entities;
 
+import hr.algebra.fishingstore.model.enums.Currency;
 import hr.algebra.fishingstore.model.enums.PaymentMethod;
 import hr.algebra.fishingstore.model.enums.PaymentStatus;
 import jakarta.persistence.*;
@@ -8,10 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.validator.constraints.UniqueElements;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Currency;
 
 @Entity
 @Table(name = "payments")
@@ -29,15 +29,13 @@ public class Payment {
 
     @Column(nullable = false)
     private Currency currency;
-
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
-    @CreationTimestamp
-    @Column(updatable = false)
+    @UpdateTimestamp
     private LocalDateTime paidAt;
 
     @CreationTimestamp
@@ -49,6 +47,5 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    @UniqueElements
     private Order order;
 }

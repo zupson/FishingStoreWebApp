@@ -1,5 +1,6 @@
 package hr.algebra.fishingstore.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hr.algebra.fishingstore.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,10 +33,10 @@ public class Order {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = false)
     private User user;
 }

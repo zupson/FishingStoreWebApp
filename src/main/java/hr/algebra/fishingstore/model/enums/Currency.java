@@ -1,6 +1,6 @@
 package hr.algebra.fishingstore.model.enums;
 
-public enum Cuency {
+public enum Currency {
     EUR,
     GBP,
     USD
