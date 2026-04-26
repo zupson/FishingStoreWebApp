@@ -1,5 +1,6 @@
-package hr.algebra.fishingstore.model;
+package hr.algebra.fishingstore.model.entities;
 
+import hr.algebra.fishingstore.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -10,8 +11,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -46,7 +45,7 @@ public class User {
 
     @Column(nullable = false)
     private boolean enabled = true;
-    
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -56,8 +55,4 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Order> orders = new ArrayList<>();
-
 }

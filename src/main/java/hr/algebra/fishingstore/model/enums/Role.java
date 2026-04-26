@@ -1,4 +1,4 @@
-package hr.algebra.fishingstore.model;
+package hr.algebra.fishingstore.model.enums;
 
 public enum Role {
     ROLE_USER,
