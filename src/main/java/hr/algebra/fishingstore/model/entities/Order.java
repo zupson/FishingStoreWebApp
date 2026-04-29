@@ -1,6 +1,5 @@
 package hr.algebra.fishingstore.model.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import hr.algebra.fishingstore.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +23,7 @@ public class Order {
     private Long id;
 
     @Column(nullable = false)
-    private Double totalPrice;
+    private BigDecimal totalPrice;
 
     @Column(nullable = false)
     private OrderStatus orderStatus;

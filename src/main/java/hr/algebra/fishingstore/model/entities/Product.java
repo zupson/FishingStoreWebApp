@@ -37,9 +37,6 @@ public class Product {
     @Column(nullable = false)
     private String image;
 
-    @Column(nullable = false)
-    private BigDecimal discount;
-
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
