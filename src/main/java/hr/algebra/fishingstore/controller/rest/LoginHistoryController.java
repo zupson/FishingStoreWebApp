@@ -1,23 +1,21 @@
 package hr.algebra.fishingstore.controller.rest;
 
-import hr.algebra.fishingstore.dal.dtos.LoginHistoryDto;
+import hr.algebra.fishingstore.dal.dto.LoginHistoryDto;
 import hr.algebra.fishingstore.dal.services.LoginHistoryService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/login-histories")
-
+@RequiredArgsConstructor
 public class LoginHistoryController {
     private final LoginHistoryService loginHistoryService;
-
-    public LoginHistoryController(LoginHistoryService loginHistoryService) {
-        this.loginHistoryService = loginHistoryService;
-    }
 
     @GetMapping
     public ResponseEntity<List<LoginHistoryDto.ResponseDto>> getAll() {
@@ -27,23 +25,5 @@ public class LoginHistoryController {
     @GetMapping("/{id}")
     public ResponseEntity<LoginHistoryDto.ResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(loginHistoryService.getById(id));
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<LoginHistoryDto.ResponseDto> create(@Valid @RequestBody LoginHistoryDto.CreateDto createDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(loginHistoryService.create(createDto));
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<LoginHistoryDto.ResponseDto> update(@PathVariable Long id,@Valid @RequestBody LoginHistoryDto.UpdateDto updateDto) {
-        return ResponseEntity.ok(loginHistoryService.update(id,updateDto));
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        boolean deleted = loginHistoryService.delete(id);
-        if(!deleted) return ResponseEntity.notFound().build();
-
-        return ResponseEntity.noContent().build();
     }
 }

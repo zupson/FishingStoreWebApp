@@ -1,32 +1,27 @@
 package hr.algebra.fishingstore.dal.services;
 
-import hr.algebra.fishingstore.dal.dtos.CartProductDto;
+import hr.algebra.fishingstore.dal.dto.CartProductDto;
 import hr.algebra.fishingstore.dal.repos.CartProductRepository;
 import hr.algebra.fishingstore.dal.repos.CartRepository;
 import hr.algebra.fishingstore.dal.repos.ProductRepository;
 import hr.algebra.fishingstore.model.entities.Cart;
 import hr.algebra.fishingstore.model.entities.CartProduct;
 import hr.algebra.fishingstore.model.entities.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CartProductService {
     private final CartProductRepository cartProductRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
 
-    public CartProductService(CartProductRepository cartProductRepository, CartRepository cartRepository, ProductRepository productRepository) {
-        this.cartProductRepository = cartProductRepository;
-        this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
-    }
-
     public CartProductDto.ResponseDto getById(Long id) {
-        CartProduct product = cartProductRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-        return mapToResponse(product);
+        return mapToResponse(cartProductRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found")));
     }
 
     public List<CartProductDto.ResponseDto> getAll() {
@@ -37,40 +32,39 @@ public class CartProductService {
     }
 
     public CartProductDto.ResponseDto create(CartProductDto.CreateDto dto) {
-        Cart cart = cartRepository.findById(dto.cartId())
+        Cart cart = cartRepository.findById(dto.getCartId())
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        Product product = productRepository.findById(dto.productId())
+        Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         CartProduct cartProduct = new CartProduct();
-        cartProduct.setQuantity(dto.quantity());
+        cartProduct.setQuantity(dto.getQuantity());
         cartProduct.setCart(cart);
         cartProduct.setProduct(product);
 
-        CartProduct createdCartProduct = cartProductRepository.save(cartProduct);
-        return mapToResponse(createdCartProduct);
+        return mapToResponse(cartProductRepository.save(cartProduct));
     }
 
     public CartProductDto.ResponseDto update(Long id, CartProductDto.EditDto dto) {
-        CartProduct cartProduct = cartProductRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart-Product not found"));
+        CartProduct cartProduct = cartProductRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart-Product not found"));
 
-        Cart cart = cartRepository.findById(dto.cartId())
+        Cart cart = cartRepository.findById(dto.getCartId())
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        Product product = productRepository.findById(dto.productId())
+        Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        cartProduct.setQuantity(dto.quantity());
+        cartProduct.setQuantity(dto.getQuantity());
         cartProduct.setCart(cart);
         cartProduct.setProduct(product);
 
-        CartProduct updatedCartProduct = cartProductRepository.save(cartProduct);
-        return mapToResponse(updatedCartProduct);
+        return mapToResponse(cartProductRepository.save(cartProduct));
     }
 
     public boolean delete(Long id) {
-        if(!cartProductRepository.existsById(id)) return false;
+        if (!cartProductRepository.existsById(id)) return false;
 
         cartProductRepository.deleteById(id);
         return true;

@@ -1,10 +1,7 @@
 package hr.algebra.fishingstore.model.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,8 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
@@ -35,7 +31,7 @@ public class Product {
     private boolean onStock;
 
     @Column(nullable = false)
-    private String image;
+    private String imagePath;
 
     @CreationTimestamp
     @Column(nullable = false)

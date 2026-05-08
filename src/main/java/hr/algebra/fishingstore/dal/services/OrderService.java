@@ -1,32 +1,30 @@
 package hr.algebra.fishingstore.dal.services;
 
-import hr.algebra.fishingstore.dal.dtos.OrderDto;
-import hr.algebra.fishingstore.dal.repos.AddressRepository;
-import hr.algebra.fishingstore.dal.repos.OrderRepository;
-import hr.algebra.fishingstore.dal.repos.UserRepository;
-import hr.algebra.fishingstore.model.entities.Address;
-import hr.algebra.fishingstore.model.entities.Order;
-import hr.algebra.fishingstore.model.entities.User;
+import hr.algebra.fishingstore.dal.dto.OrderDto;
+import hr.algebra.fishingstore.dal.repos.*;
+import hr.algebra.fishingstore.model.entities.*;
+import hr.algebra.fishingstore.model.enums.OrderStatus;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
-    private final OrderRepository orderRepository;
-    private final AddressRepository addressRepository;
     private final UserRepository userRepository;
-
-    public OrderService(OrderRepository orderRepository, AddressRepository addressRepository, UserRepository userRepository) {
-        this.orderRepository = orderRepository;
-        this.addressRepository = addressRepository;
-        this.userRepository = userRepository;
-    }
+    private final AddressRepository addressRepository;
+    private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
+    private final CartProductRepository cartProductRepository;
+    private final ProductOrderRepository productOrderRepository;
 
     public OrderDto.ResponseDto getById(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order Not Found"));
-        return mapToResponse(order);
+        return mapToResponse(orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order Not Found")));
     }
 
     public List<OrderDto.ResponseDto> getAll() {
@@ -36,44 +34,62 @@ public class OrderService {
                 .toList();
     }
 
-    public OrderDto.ResponseDto create(OrderDto.CreateDto dto){
+    @Transactional
+    public OrderDto.ResponseDto create(OrderDto.CreateDto dto) {
 
-        Address address = addressRepository.findById(dto.addressId())
-                .orElseThrow(() -> new RuntimeException("Address Not Found"));
-
-        User user = userRepository.findById(dto.userId())
+        String currentLoggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(currentLoggedInUsername)
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
+        Address address = addressRepository.findById(dto.getAddressId())
+                .orElseThrow(() -> new RuntimeException("Address Not Found"));
+        Cart cart = cartRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("Cart Not Found"));
+        List<CartProduct> cartProducts = cartProductRepository.findByCart(cart);
+
+        if (cartProducts.isEmpty()) throw new RuntimeException("Cart is empty");
+
+        BigDecimal totalPrice = cartProducts
+                .stream()
+                .map(product -> product
+                        .getProduct()
+                        .getPrice()
+                        .multiply(BigDecimal
+                                .valueOf(product
+                                        .getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         Order order = new Order();
-        order.setTotalPrice(dto.totalPrice());
-        order.setOrderStatus(dto.orderStatus());
+        order.setOrderStatus(OrderStatus.PENDING);
         order.setAddress(address);
         order.setUser(user);
+        order.setTotalPrice(totalPrice);
 
         Order createdOrder = orderRepository.save(order);
+
+        for (CartProduct item : cartProducts) {
+            ProductOrder productOrder = new ProductOrder();
+            productOrder.setOrder(createdOrder);
+            productOrder.setProduct(item.getProduct());
+            productOrder.setQuantity(item.getQuantity());
+            productOrder.setPriceAtPurchase(item.getProduct().getPrice());
+            productOrderRepository.save(productOrder);
+        }
+
+        cartProductRepository.deleteAll(cartProducts);
         return mapToResponse(createdOrder);
     }
 
-    public OrderDto.ResponseDto update(Long id,OrderDto.EditDto dto){
-        Order order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order Not Found"));
+    public OrderDto.ResponseDto update(Long id, OrderDto.EditDto dto) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order Not Found"));
 
-        Address address = addressRepository.findById(dto.addressId())
-                .orElseThrow(() -> new RuntimeException("Address Not Found"));
+        order.setOrderStatus(dto.getOrderStatus());
 
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
-
-        order.setTotalPrice(dto.totalPrice());
-        order.setOrderStatus(dto.orderStatus());
-        order.setAddress(address);
-        order.setUser(user);
-
-        Order editedOrder = orderRepository.save(order);
-        return mapToResponse(editedOrder);
+        return mapToResponse(orderRepository.save(order));
     }
 
     public boolean delete(Long id) {
-        if(!orderRepository.existsById(id)) return false;
+        if (!orderRepository.existsById(id)) return false;
 
         orderRepository.deleteById(id);
         return true;

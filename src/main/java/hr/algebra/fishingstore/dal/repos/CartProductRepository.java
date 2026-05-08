@@ -1,10 +1,13 @@
 package hr.algebra.fishingstore.dal.repos;
 
+import hr.algebra.fishingstore.model.entities.Cart;
 import hr.algebra.fishingstore.model.entities.CartProduct;
-import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface CartProductRepository extends JpaRepository<@NonNull CartProduct,@NonNull Long> {
+public interface CartProductRepository extends JpaRepository<CartProduct, Long> {
+    List<CartProduct> findByCart(Cart cart);
 }

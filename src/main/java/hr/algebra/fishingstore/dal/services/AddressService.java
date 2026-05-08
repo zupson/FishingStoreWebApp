@@ -1,25 +1,21 @@
 package hr.algebra.fishingstore.dal.services;
 
-import hr.algebra.fishingstore.dal.dtos.AddressDto;
+import hr.algebra.fishingstore.dal.dto.AddressDto;
 import hr.algebra.fishingstore.dal.repos.AddressRepository;
 import hr.algebra.fishingstore.model.entities.Address;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AddressService {
     private final AddressRepository addressRepository;
 
-    public AddressService(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
-
     public AddressDto.ResponseDto getById(Long id) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
-
-        return mapToResponseDto(address);
+        return mapToResponseDto(addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found")));
     }
 
     public List<AddressDto.ResponseDto> getAll() {
@@ -32,29 +28,28 @@ public class AddressService {
     public AddressDto.ResponseDto create(AddressDto.CreateDto dto) {
         Address address = new Address();
 
-        address.setStreet(dto.street());
-        address.setCity(dto.city());
-        address.setPostalCode(dto.postalCode());
-        address.setCountry(dto.country());
+        address.setStreet(dto.getStreet());
+        address.setCity(dto.getCity());
+        address.setPostalCode(dto.getPostalCode());
+        address.setCountry(dto.getCountry());
 
-        Address createdAddress = addressRepository.save(address);
-        return mapToResponseDto(createdAddress);
+        return mapToResponseDto(addressRepository.save(address));
     }
-    public AddressDto.ResponseDto update(Long id,AddressDto.EditDto dto) {
+
+    public AddressDto.ResponseDto update(Long id, AddressDto.EditDto dto) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
-        address.setStreet(dto.street());
-        address.setCity(dto.city());
-        address.setPostalCode(dto.postalCode());
-        address.setCountry(dto.country());
+        address.setStreet(dto.getStreet());
+        address.setCity(dto.getCity());
+        address.setPostalCode(dto.getPostalCode());
+        address.setCountry(dto.getCountry());
 
-        Address createdAddress = addressRepository.save(address);
-        return mapToResponseDto(createdAddress);
+        return mapToResponseDto(addressRepository.save(address));
     }
 
     public boolean delete(Long id) {
-        if(!addressRepository.existsById(id)) return false;
+        if (!addressRepository.existsById(id)) return false;
 
         addressRepository.deleteById(id);
         return true;

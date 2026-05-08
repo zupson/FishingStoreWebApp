@@ -1,8 +1,9 @@
 package hr.algebra.fishingstore.controller.rest;
 
-import hr.algebra.fishingstore.dal.dtos.UserDto;
+import hr.algebra.fishingstore.dal.dto.UserDto;
 import hr.algebra.fishingstore.dal.services.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-
+@RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public ResponseEntity<List<UserDto.ResponseDto>> getAll() {
@@ -40,8 +36,8 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginDto));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<UserDto.ResponseDto> update(@PathVariable Long id, @Valid @RequestBody UserDto.UpdateDto updateDto) {
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto.ResponseDto> update(@PathVariable Long id, @Valid @RequestBody UserDto.EditDto updateDto) {
         return ResponseEntity.ok(userService.update(id, updateDto));
     }
 
@@ -50,7 +46,7 @@ public class UserController {
         return ResponseEntity.ok(userService.changePassword(changePasswordDto));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = userService.delete(id);
         if (!deleted) return ResponseEntity.notFound().build();

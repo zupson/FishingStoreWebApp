@@ -1,23 +1,21 @@
 package hr.algebra.fishingstore.dal.services;
 
-import hr.algebra.fishingstore.dal.dtos.UserDto;
+import hr.algebra.fishingstore.dal.dto.UserDto;
 import hr.algebra.fishingstore.dal.repos.UserRepository;
 import hr.algebra.fishingstore.model.entities.User;
 import hr.algebra.fishingstore.model.enums.Role;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public List<UserDto.ResponseDto> getAll() {
         return userRepository.findAll()
@@ -27,28 +25,20 @@ public class UserService {
     }
 
     public UserDto.ResponseDto getById(Long id) {
-        // findById() vraća Optional<User> — kutija koja može biti prazna ili sadržavati User
-        // orElseThrow() otvara tu kutiju:
-        //    - ako ima User unutra  → izvadi ga i spremi u varijablu "user"
-        //    - ako je kutija prazna → baci RuntimeException
-        //ako maknemo .orElseThrow onda je tip Optional<User>, a sad je konkretan User
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found."));
-
-        return mapToResponseDto(user);
+        return mapToResponseDto(userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found.")));
     }
 
-    public UserDto.ResponseDto update(Long id, UserDto.UpdateDto dto) {
+    public UserDto.ResponseDto update(Long id, UserDto.EditDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found."));
 
-        user.setFirstName(dto.firstName());
-        user.setLastName(dto.lastName());
-        user.setEmail(dto.email());
-        user.setUsername(dto.username());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
 
-        User updatedUser = userRepository.save(user);
-        return mapToResponseDto(updatedUser);
+        return mapToResponseDto(userRepository.save(user));
     }
 
     public boolean delete(Long id) {
@@ -59,10 +49,10 @@ public class UserService {
     }
 
     public UserDto.ResponseDto login(UserDto.LoginDto dto) {
-        User user = userRepository.findByUsername(dto.username())
+        User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found."));
 
-        if (!passwordEncoder.matches(dto.password(), user.getPassword()))
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
             throw new RuntimeException("Wrong password.");
 
         return mapToResponseDto(user);
@@ -71,27 +61,28 @@ public class UserService {
     public UserDto.ResponseDto register(UserDto.RegisterDto dto) {
         User user = new User();
 
-        user.setFirstName(dto.firstName());
-        user.setLastName(dto.lastName());
-        user.setEmail(dto.email());
-        user.setUsername(dto.username());
-        user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(Role.USER);
         user.setEnabled(true);
 
-        User registeredUser = userRepository.save(user);
-
-        return mapToResponseDto(registeredUser);
+        return mapToResponseDto(userRepository.save(user));
     }
 
     public boolean changePassword(UserDto.ChangePasswordDto dto) {
-        User user = userRepository.findById(dto.id())
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found."));
 
-        if (!passwordEncoder.matches(dto.oldPassword(), user.getPassword()))
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword()))
             throw new RuntimeException("Old password doesn't match.");
 
-        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(user);
         return true;
     }

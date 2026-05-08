@@ -1,32 +1,27 @@
 package hr.algebra.fishingstore.dal.services;
 
-import hr.algebra.fishingstore.dal.dtos.ProductOrderDto;
+import hr.algebra.fishingstore.dal.dto.ProductOrderDto;
 import hr.algebra.fishingstore.dal.repos.OrderRepository;
 import hr.algebra.fishingstore.dal.repos.ProductOrderRepository;
 import hr.algebra.fishingstore.dal.repos.ProductRepository;
 import hr.algebra.fishingstore.model.entities.Order;
 import hr.algebra.fishingstore.model.entities.Product;
 import hr.algebra.fishingstore.model.entities.ProductOrder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductOrderService {
     private final ProductOrderRepository productOrderRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
-    public ProductOrderService(ProductOrderRepository productOrderRepository, OrderRepository orderRepository, ProductRepository productRepository) {
-        this.productOrderRepository = productOrderRepository;
-        this.orderRepository = orderRepository;
-        this.productRepository = productRepository;
-    }
-
     public ProductOrderDto.ResponseDto getById(Long id) {
-        ProductOrder productOrder = productOrderRepository.findById(id).orElseThrow(() -> new RuntimeException("Product Order Not Found"));
-
-        return mapToResponse(productOrder);
+        return mapToResponse(productOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product Order Not Found")));
     }
 
     public List<ProductOrderDto.ResponseDto> getAll() {
@@ -37,45 +32,28 @@ public class ProductOrderService {
     }
 
     public ProductOrderDto.ResponseDto create(ProductOrderDto.CreateDto dto) {
-        Order order = orderRepository.findById(dto.orderId())
+        Order order = orderRepository.findById(dto.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order Not Found"));
 
-        Product product = productRepository.findById(dto.productId())
+        Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product Not Found"));
 
         ProductOrder productOrder = new ProductOrder();
-        productOrder.setQuantity(dto.quantity());
-        productOrder.setPriceAtPurchase(dto.priceAtPurchase());
+        productOrder.setQuantity(dto.getQuantity());
+        productOrder.setPriceAtPurchase(product.getPrice());
         productOrder.setOrder(order);
         productOrder.setProduct(product);
 
-        ProductOrder createdProductOrder = productOrderRepository.save(productOrder);
-        return mapToResponse(createdProductOrder);
+        return mapToResponse(productOrderRepository.save(productOrder));
     }
 
     public ProductOrderDto.ResponseDto update(Long id, ProductOrderDto.EditDto dto) {
-        ProductOrder productOrder = productOrderRepository.findById(id).orElseThrow(() -> new RuntimeException("Product Order Not Found"));
+        ProductOrder productOrder = productOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product Order Not Found"));
 
-        Order order = orderRepository.findById(dto.orderId())
-                .orElseThrow(() -> new RuntimeException("Order Not Found"));
+        productOrder.setQuantity(dto.getQuantity());
 
-        Product product = productRepository.findById(dto.productId())
-                .orElseThrow(() -> new RuntimeException("Product Not Found"));
-
-        productOrder.setQuantity(dto.quantity());
-        productOrder.setPriceAtPurchase(dto.priceAtPurchase());
-        productOrder.setOrder(order);
-        productOrder.setProduct(product);
-
-        ProductOrder upratedProductOrder = productOrderRepository.save(productOrder);
-        return mapToResponse(upratedProductOrder);
-    }
-
-    public boolean delete(Long id) {
-        if (!productOrderRepository.existsById(id)) return false;
-
-        productOrderRepository.deleteById(id);
-        return true;
+        return mapToResponse(productOrderRepository.save(productOrder));
     }
 
     private ProductOrderDto.ResponseDto mapToResponse(ProductOrder productOrder) {

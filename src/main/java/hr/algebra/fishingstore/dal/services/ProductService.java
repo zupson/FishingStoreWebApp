@@ -1,29 +1,26 @@
 package hr.algebra.fishingstore.dal.services;
 
-import hr.algebra.fishingstore.dal.dtos.ProductDto;
+import hr.algebra.fishingstore.dal.dto.ProductDto;
 import hr.algebra.fishingstore.dal.repos.CategoryRepository;
 import hr.algebra.fishingstore.dal.repos.ProductRepository;
 import hr.algebra.fishingstore.model.entities.Category;
 import hr.algebra.fishingstore.model.entities.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     public ProductDto.ResponseDto getById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        return mapToResponseDto(product);
+        return mapToResponseDto(productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found")));
     }
 
     public List<ProductDto.ResponseDto> getAll() {
@@ -34,18 +31,12 @@ public class ProductService {
     }
 
     public ProductDto.ResponseDto create(ProductDto.CreateDto dto) {
-        Category category = categoryRepository.findById(dto.categoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
         Product product = new Product();
-        product.setName(dto.name());
-        product.setDescription(dto.description());
-        product.setPrice(dto.price());
-        product.setOnStock(dto.onStock());
-        product.setImage(dto.image());
-        product.setCategory(category);
 
-        Product createdProduct = productRepository.save(product);
-        return mapToResponseDto(createdProduct);
+        return setupProduct(product, category, dto.getName(), dto.getDescription(), dto.getPrice(), dto.isOnStock(), dto);
     }
 
     public ProductDto.ResponseDto update(Long id, ProductDto.EditDto dto) {
@@ -53,18 +44,10 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Category category = categoryRepository.findById(dto.categoryId())
+        Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        product.setName(dto.name());
-        product.setDescription(dto.description());
-        product.setPrice(dto.price());
-        product.setOnStock(dto.onStock());
-        product.setImage(dto.image());
-        product.setCategory(category);
-
-        Product updatedProduct = productRepository.save(product);
-        return mapToResponseDto(updatedProduct);
+        return setupProduct(product, category, dto.getName(), dto.getDescription(), dto.getPrice(), dto.isOnStock(), dto);
     }
 
     public boolean delete(Long id) {
@@ -74,6 +57,17 @@ public class ProductService {
         return true;
     }
 
+    private ProductDto.ResponseDto setupProduct(Product product, Category category, String name, String description, BigDecimal price, boolean onStock, ProductDto.ProductBaseDto dto) {
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setOnStock(onStock);
+        product.setCategory(category);
+
+        Product updatedProduct = productRepository.save(product);
+        return mapToResponseDto(updatedProduct);
+    }
+
     private ProductDto.ResponseDto mapToResponseDto(Product product) {
         return new ProductDto.ResponseDto(
                 product.getId(),
@@ -81,7 +75,7 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 product.isOnStock(),
-                product.getImage(),
+                product.getImagePath(),
                 product.getCreatedAt(),
                 product.getUpdatedAt(),
                 product.getCategory().getId()
