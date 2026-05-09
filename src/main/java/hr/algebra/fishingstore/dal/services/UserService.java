@@ -16,6 +16,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public List<UserDto.ResponseDto> getAll() {
         return userRepository.findAll()
@@ -48,17 +50,22 @@ public class UserService {
         return true;
     }
 
-    public UserDto.ResponseDto login(UserDto.LoginDto dto) {
+    public UserDto.AuthResponseDto login(UserDto.LoginDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
             throw new RuntimeException("Wrong password.");
 
-        return mapToResponseDto(user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        refreshTokenService.create(user, refreshToken);
+
+        return new UserDto.AuthResponseDto(accessToken, refreshToken, mapToResponseDto(user));
+
     }
 
-    public UserDto.ResponseDto register(UserDto.RegisterDto dto) {
+    public UserDto.AuthResponseDto register(UserDto.RegisterDto dto) {
         User user = new User();
 
         user.setFirstName(dto.getFirstName());
@@ -68,8 +75,13 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(Role.USER);
         user.setEnabled(true);
+        User savedUser = userRepository.save(user);
 
-        return mapToResponseDto(userRepository.save(user));
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        refreshTokenService.create(savedUser, refreshToken);
+
+        return new UserDto.AuthResponseDto(accessToken, refreshToken, mapToResponseDto(savedUser));
     }
 
     public boolean changePassword(UserDto.ChangePasswordDto dto) {

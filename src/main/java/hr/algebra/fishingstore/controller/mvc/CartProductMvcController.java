@@ -10,42 +10,50 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/mvc/cart-products")
+@RequestMapping(CartProductMvcController.BASE_URL)
 @RequiredArgsConstructor
 public class CartProductMvcController {
+    static final String BASE_URL = "/mvc/cart-products";
+    private static final String REDIRECT_LIST = "redirect:" + BASE_URL;
+    private static final String VIEW_PREFIX = "cart-products/";
+    private static final String LIST_VIEW = VIEW_PREFIX + "list";
+    private static final String DETAILS_VIEW = VIEW_PREFIX + "details";
+    private static final String FORM_CREATE = VIEW_PREFIX + "form-create";
+    private static final String MODEL_KEY = "cartProducts";
+
     private final CartProductService cartProductService;
 
     @GetMapping
     public String getAll(Model model) {
-        model.addAttribute("cart-products", cartProductService.getAll());
-        return "cart-products/list";
+        model.addAttribute(MODEL_KEY, cartProductService.getAll());
+        return LIST_VIEW;
     }
 
     @GetMapping("/{id}")
     public String getById(@PathVariable Long id, Model model) {
-        model.addAttribute("cart-products", cartProductService.getById(id));
-        return "cart-products/details";
+        model.addAttribute(MODEL_KEY, cartProductService.getById(id));
+        return DETAILS_VIEW;
     }
 
     @GetMapping("/new")
     public String createForm(Model model) {
-        model.addAttribute("cart-products", new CartProductDto.CreateDto());
-        return "cart-products/form-create";
+        model.addAttribute(MODEL_KEY, new CartProductDto.CreateDto());
+        return FORM_CREATE;
     }
 
     @PostMapping("/create")
-    public String create(@Valid @ModelAttribute("cart-products") CartProductDto.CreateDto createDto,
+    public String create(@Valid @ModelAttribute(MODEL_KEY) CartProductDto.CreateDto createDto,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "cart-products/form-create";
+            return FORM_CREATE;
         }
         cartProductService.create(createDto);
-        return "redirect:/cart-products";
+        return REDIRECT_LIST;
     }
 
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         cartProductService.delete(id);
-        return "redirect:/cart-products";
+        return REDIRECT_LIST;
     }
 }

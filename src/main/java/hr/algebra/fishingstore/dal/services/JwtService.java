@@ -76,7 +76,11 @@ public class JwtService {
     public Long extractUserId(String token) {
         return decodeToken(token).getClaim(USER_ID).asLong();
     }
-    
+
+    public String extractRole(String token) {
+        return decodeToken(token).getClaim(ROLE).asString();
+    }
+
     public boolean isAccessToken(String token) {
         return ACCESS.equals(decodeToken(token).getClaim(TYPE).asString());
     }

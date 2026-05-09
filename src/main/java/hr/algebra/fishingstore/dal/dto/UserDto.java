@@ -98,4 +98,13 @@ public class UserDto {
         LocalDateTime createdAt;
         LocalDateTime updatedAt;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AuthResponseDto {
+        String accessToken;
+        String refreshToken;
+        UserDto.ResponseDto user;
+    }
 }
