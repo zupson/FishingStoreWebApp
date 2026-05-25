@@ -14,13 +14,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+    public static final String PRODUCT_NOT_FOUND = "Product not found";
+    public static final String CATEGORY_NOT_FOUND = "Category not found";
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
 
     public ProductDto.ResponseDto getById(Long id) {
         return mapToResponseDto(productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found")));
+                .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND)));
     }
 
     public List<ProductDto.ResponseDto> getAll() {
@@ -32,7 +35,7 @@ public class ProductService {
 
     public ProductDto.ResponseDto create(ProductDto.CreateDto dto) {
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new RuntimeException(CATEGORY_NOT_FOUND));
 
         Product product = new Product();
 
@@ -42,10 +45,10 @@ public class ProductService {
     public ProductDto.ResponseDto update(Long id, ProductDto.EditDto dto) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
 
         Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new RuntimeException(CATEGORY_NOT_FOUND));
 
         return setupProduct(product, category, dto.getName(), dto.getDescription(), dto.getPrice(), dto.isOnStock(), dto);
     }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}" lang="hr">
+<head><title>Košarica</title></head>
+<body>
+<div layout:fragment="content" th:object="${carts}">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-cart me-2 text-primary"></i>Košarica #<span th:text="*{id}"></span></h4>
+        <a th:href="@{/mvc/cart-products}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+    <div class="card shadow-sm" style="max-width:480px;">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted">Korisnik</dt>
+                <dd class="col-sm-8"><a th:href="@{/mvc/users/{id}(id=*{userId})}" th:text="'Korisnik #' + *{userId}" class="btn btn-sm btn-outline-secondary"></a></dd>
+                <dt class="col-sm-4 text-muted">Zadnja izmjena</dt>
+                <dd class="col-sm-8" th:text="*{#temporals.format(updatedAt,'dd.MM.yyyy HH:mm')}"></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+</body>
+</html>

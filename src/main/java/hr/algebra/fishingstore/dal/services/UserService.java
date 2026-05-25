@@ -11,9 +11,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    public static final String USER_NOT_FOUND = "User not found.";
+    public static final String WRONG_CREDENTIALS = "Wrong password or username.";
+    public static final String PASSWORDS_DOES_NOT_MATCH = "Passwords doesn't match.";
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -28,12 +33,12 @@ public class UserService {
 
     public UserDto.ResponseDto getById(Long id) {
         return mapToResponseDto(userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found.")));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND)));
     }
 
     public UserDto.ResponseDto update(Long id, UserDto.EditDto dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
@@ -52,10 +57,10 @@ public class UserService {
 
     public UserDto.AuthResponseDto login(UserDto.LoginDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
-            throw new RuntimeException("Wrong password.");
+            throw new RuntimeException(WRONG_CREDENTIALS);
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -88,11 +93,11 @@ public class UserService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
 
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword()))
-            throw new RuntimeException("Old password doesn't match.");
+            throw new RuntimeException(PASSWORDS_DOES_NOT_MATCH);
 
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(user);

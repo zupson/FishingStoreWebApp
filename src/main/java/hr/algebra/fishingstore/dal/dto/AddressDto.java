@@ -14,17 +14,17 @@ public class AddressDto {
     public abstract static class AddressBaseDto{
         @NotBlank(message = "Street can not be empty")
         @Size(min=5,  max=100)
-        String street;
+        private String street;
         @NotBlank(message = "City can not be empty")
         @Size(min=3,  max=100)
-        String city;
+        private String city;
         @NotNull(message = "Postal code can not be empty")
         @Min(10000)
         @Max(9999999)
-        Integer postalCode;
+        private Integer postalCode;
         @NotBlank(message = "Country can not be empty")
         @Size(min=2,  max=100)
-        String country;
+        private String country;
     }
 
     @Data
@@ -39,10 +39,10 @@ public class AddressDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        String street;
-        String city;
-        Integer postalCode;
-        String country;
+        private Long id;
+        private String street;
+        private String city;
+        private Integer postalCode;
+        private String country;
     }
 }

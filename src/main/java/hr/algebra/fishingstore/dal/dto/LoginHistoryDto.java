@@ -12,10 +12,10 @@ public class LoginHistoryDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        String ipAddress;
-        boolean success;
-        LocalDateTime loginAt;
-        Long userId;
+        private Long id;
+        private String ipAddress;
+        private boolean success;
+        private LocalDateTime loginAt;
+        private Long userId;
     }
 }

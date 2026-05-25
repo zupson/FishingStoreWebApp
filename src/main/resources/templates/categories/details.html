@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}" lang="hr">
+<head><title>Detalji kategorije</title></head>
+<body>
+<div layout:fragment="content" th:object="${categories}">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-tag me-2 text-primary"></i>Detalji kategorije</h4>
+        <a th:href="@{/mvc/categories}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+
+    <div class="card shadow-sm" style="max-width: 560px;">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted">Naziv</dt>
+                <dd class="col-sm-8 fw-semibold" th:text="*{name}"></dd>
+                <dt class="col-sm-4 text-muted">Opis</dt>
+                <dd class="col-sm-8" th:text="*{description}"></dd>
+                <dt class="col-sm-4 text-muted">Kreirano</dt>
+                <dd class="col-sm-8 small" th:text="*{#temporals.format(createdAt,'dd.MM.yyyy HH:mm')}"></dd>
+                <dt class="col-sm-4 text-muted">Ažurirano</dt>
+                <dd class="col-sm-8 small" th:text="*{#temporals.format(updatedAt,'dd.MM.yyyy HH:mm')}"></dd>
+            </dl>
+        </div>
+        <div class="card-footer d-flex gap-2">
+            <a th:href="@{/mvc/products(categoryId=*{id})}" class="btn btn-primary btn-sm">
+                <i class="bi bi-bag me-1"></i>Vidi proizvode
+            </a>
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/mvc/categories/edit/{id}(id=*{id})}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-pencil me-1"></i>Uredi
+            </a>
+            <form sec:authorize="hasRole('ADMIN')"
+                  th:action="@{/mvc/categories/delete/{id}(id=*{id})}" method="post"
+                  onsubmit="return confirm('Obrisati kategoriju?')">
+                <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Obriši</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

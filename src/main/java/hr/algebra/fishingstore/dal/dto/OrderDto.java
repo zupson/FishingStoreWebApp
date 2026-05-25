@@ -17,7 +17,7 @@ public class OrderDto {
     public static class CreateDto {
         @NotNull(message = "Address id can not be empty")
         @Positive
-        Long addressId;
+        private Long addressId;
     }
 
     @Data
@@ -25,18 +25,18 @@ public class OrderDto {
     @AllArgsConstructor
     public static class EditDto {
         @NotNull(message = "Order status can not be empty")
-        OrderStatus orderStatus;
+        private OrderStatus orderStatus;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto{
-        Long id;
-        BigDecimal totalPrice;
-        OrderStatus orderStatus;
-        LocalDateTime createdAt;
-        Long addressId;
-        Long userId;
+        private Long id;
+        private BigDecimal totalPrice;
+        private OrderStatus orderStatus;
+        private LocalDateTime createdAt;
+        private Long addressId;
+        private Long userId;
     }
 }

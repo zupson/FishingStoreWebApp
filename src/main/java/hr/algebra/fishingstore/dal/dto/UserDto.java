@@ -18,24 +18,24 @@ public class UserDto {
     public static class RegisterDto {
         @NotBlank(message = "First name can not be empty")
         @Size(min = 3, max = 100)
-        String firstName;
+        private String firstName;
 
         @NotBlank(message = "Last name can not be empty")
         @Size(min = 3, max = 100)
-        String lastName;
+        private String lastName;
 
         @NotBlank(message = "Email name can not be empty")
         @Email
         @Size(min = 5, max = 100)
-        String email;
+        private String email;
 
         @NotBlank(message = "Username can not be empty")
         @Size(min = 3, max = 50)
-        String username;
+        private String username;
 
         @NotBlank(message = "Password can not be empty")
         @Size(min = 8, max = 50)
-        String password;
+        private String password;
     }
 
     @Data
@@ -44,10 +44,10 @@ public class UserDto {
     public static class LoginDto {
         @NotBlank(message = "Username can not be empty")
         @Size(min = 3, max = 50)
-        String username;
+        private String username;
         @NotBlank(message = "Password can not be empty")
         @Size(min = 8, max = 50)
-        String password;
+        private String password;
     }
 
     @Data
@@ -56,10 +56,10 @@ public class UserDto {
     public static class ChangePasswordDto {
         @NotBlank(message = "Old password can not be empty")
         @Size(min = 8, max = 50)
-        String oldPassword;
+        private String oldPassword;
         @NotBlank(message = "New password can not be empty")
         @Size(min = 8, max = 50)
-        String newPassword;
+        private String newPassword;
     }
 
     @Data
@@ -68,43 +68,43 @@ public class UserDto {
     public static class EditDto {
         @NotBlank(message = "First name can not be empty")
         @Size(min = 3, max = 100)
-        String firstName;
+        private String firstName;
 
         @NotBlank(message = "Last name can not be empty")
         @Size(min = 3, max = 100)
-        String lastName;
+        private String lastName;
 
         @NotBlank(message = "Email name can not be empty")
         @Email
         @Size(min = 5, max = 100)
-        String email;
+        private String email;
 
         @NotBlank(message = "Username can not be empty")
         @Size(min = 3, max = 50)
-        String username;
+        private String username;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        String firstName;
-        String lastName;
-        String email;
-        String username;
-        Role role;
-        boolean enabled;
-        LocalDateTime createdAt;
-        LocalDateTime updatedAt;
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String username;
+        private Role role;
+        private boolean enabled;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AuthResponseDto {
-        String accessToken;
-        String refreshToken;
-        UserDto.ResponseDto user;
+        private String accessToken;
+        private String refreshToken;
+        private UserDto.ResponseDto user;
     }
 }

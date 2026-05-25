@@ -11,12 +11,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
+    public static final String CATEGORY_NOT_FOUND = "Category not found";
 
     private final CategoryRepository categoryRepository;
 
     public CategoryDto.ResponseDto getById(Long id) {
         return mapToResponseDto(categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found")));
+                .orElseThrow(() -> new RuntimeException(CATEGORY_NOT_FOUND)));
     }
 
     public List<CategoryDto.ResponseDto> getAll() {
@@ -37,7 +38,7 @@ public class CategoryService {
 
     public CategoryDto.ResponseDto update(Long id, CategoryDto.EditDto dto) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new RuntimeException(CATEGORY_NOT_FOUND));
 
         category.setName(dto.getName());
         category.setDescription(dto.getDescription());

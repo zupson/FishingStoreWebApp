@@ -2,6 +2,7 @@ package hr.algebra.fishingstore.controller.mvc;
 
 import hr.algebra.fishingstore.dal.dto.AddressDto;
 import hr.algebra.fishingstore.dal.services.AddressService;
+import hr.algebra.fishingstore.utilities.PathConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(AddressMvcController.BASE_URL)
 @RequiredArgsConstructor
 public class AddressMvcController {
-    static final String BASE_URL = "/mvc/addresses";
-    private static final String REDIRECT_LIST = "redirect:" + BASE_URL;
-    private static final String VIEW_PREFIX = "categories/";
-    private static final String LIST_VIEW = VIEW_PREFIX + "list";
-    private static final String DETAILS_VIEW = VIEW_PREFIX + "details";
-    private static final String FORM_CREATE = VIEW_PREFIX + "form-create";
-    private static final String MODEL_KEY = "categories";
+    static final String BASE_URL = PathConst.MVC + PathConst.ADDRESSES;
+
+    private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
+    private static final String LIST_VIEW = PathConst.ADDRESSES + PathConst.LIST;
+    private static final String DETAILS_VIEW = PathConst.ADDRESSES + PathConst.DETAILS;
+    private static final String FORM_CREATE_VIEW = PathConst.ADDRESSES + PathConst.FORM_CREATE;
+    private static final String MODEL_KEY = "addresses";
 
     private final AddressService addressService;
 
@@ -29,28 +30,28 @@ public class AddressMvcController {
         return LIST_VIEW;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, addressService.getById(id));
         return DETAILS_VIEW;
     }
 
-    @GetMapping("/new")
+    @GetMapping(PathConst.NEW)
     public String createForm(Model model) {
         model.addAttribute(MODEL_KEY, new AddressDto.CreateDto());
-        return FORM_CREATE;
+        return FORM_CREATE_VIEW;
     }
 
-    @PostMapping("/create")
+    @PostMapping(PathConst.CREATE)
     public String create(@Valid @ModelAttribute(MODEL_KEY) AddressDto.CreateDto createDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return FORM_CREATE;
+            return FORM_CREATE_VIEW;
         }
         addressService.create(createDto);
         return REDIRECT_LIST;
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping(PathConst.DELETE + PathConst.ID)
     public String delete(@PathVariable Long id) {
         addressService.delete(id);
         return REDIRECT_LIST;

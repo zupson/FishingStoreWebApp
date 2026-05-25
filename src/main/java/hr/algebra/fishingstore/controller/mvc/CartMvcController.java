@@ -1,6 +1,7 @@
 package hr.algebra.fishingstore.controller.mvc;
 
 import hr.algebra.fishingstore.dal.services.CartService;
+import hr.algebra.fishingstore.utilities.PathConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(CartMvcController.BASE_URL)
 @RequiredArgsConstructor
 public class CartMvcController {
-    static final String BASE_URL = "/mvc/carts";
-    private static final String VIEW_PREFIX = "carts/";
-    private static final String DETAILS_VIEW = VIEW_PREFIX + "details";
+    static final String BASE_URL = PathConst.MVC + PathConst.CARTS;
+
+    private static final String DETAILS_VIEW = PathConst.CARTS + PathConst.DETAILS;
     private static final String MODEL_KEY = "carts";
 
     private final CartService cartService;
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, cartService.getByUserId(id));
         return DETAILS_VIEW;

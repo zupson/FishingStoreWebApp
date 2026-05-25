@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}" lang="hr">
+<head><title>Promjena statusa narudžbe</title></head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-arrow-repeat me-2 text-primary"></i>Promjena statusa narudžbe</h4>
+        <a th:href="@{/mvc/orders}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+    <div class="card shadow-sm" style="max-width: 440px;">
+        <div class="card-body">
+            <form th:action="@{/mvc/orders/edit/{id}(id=${orderId})}" th:object="${orders}" method="post">
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Status narudžbe <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{orderStatus}" th:classappend="${#fields.hasErrors('orderStatus')} ? 'is-invalid'">
+                        <option value="">-- Odaberi status --</option>
+                        <option value="PENDING">PENDING</option>
+                        <option value="CONFIRMED">CONFIRMED</option>
+                        <option value="PROCESSING">PROCESSING</option>
+                        <option value="SHIPPED">SHIPPED</option>
+                        <option value="DELIVERED">DELIVERED</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{orderStatus}"></div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Spremi</button>
+                    <a th:href="@{/mvc/orders}" class="btn btn-outline-secondary">Odustani</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

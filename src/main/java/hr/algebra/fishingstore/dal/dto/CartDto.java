@@ -11,8 +11,8 @@ public class CartDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        LocalDateTime updatedAt;
-        Long userId;
+        private Long id;
+        private LocalDateTime updatedAt;
+        private Long userId;
     }
 }

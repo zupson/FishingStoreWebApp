@@ -1,7 +1,7 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.LoginHistoryDto;
-import hr.algebra.fishingstore.dal.security.RoleBasedAccessConst;
+import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.LoginHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

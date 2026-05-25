@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}" lang="hr">
+<head><title>Narudžbe</title></head>
+<body>
+<div layout:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-receipt me-2 text-primary"></i>Narudžbe</h4>
+        <a th:href="@{/mvc/orders/new}" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>Nova narudžba
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Ukupno</th>
+                        <th>Status</th>
+                        <th sec:authorize="hasRole('ADMIN')">Korisnik</th>
+                        <th>Datum</th>
+                        <th class="text-end">Akcije</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="o : ${orders}" th:object="${o}">
+                        <td th:text="*{id}" class="text-muted small"></td>
+                        <td class="fw-semibold" th:text="'€ ' + *{totalPrice}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="*{orderStatus.name() == 'PENDING'} ? 'bg-warning text-dark' :
+                                                  (*{orderStatus.name() == 'CONFIRMED'} ? 'bg-info text-dark' :
+                                                  (*{orderStatus.name() == 'DELIVERED'} ? 'bg-success' :
+                                                  (*{orderStatus.name() == 'CANCELLED'} ? 'bg-danger' : 'bg-secondary')))"
+                                  th:text="*{orderStatus}"></span>
+                        </td>
+                        <td sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/mvc/users/{id}(id=*{userId})}" th:text="'#' + *{userId}" class="text-decoration-none small"></a>
+                        </td>
+                        <td class="text-muted small" th:text="*{#temporals.format(createdAt,'dd.MM.yyyy HH:mm')}"></td>
+                        <td class="text-end">
+                            <a th:href="@{/mvc/orders/{id}(id=*{id})}" class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <!-- Samo admin mijenja status i briše -->
+                            <a sec:authorize="hasRole('ADMIN')"
+                               th:href="@{/mvc/orders/edit/{id}(id=*{id})}" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form sec:authorize="hasRole('ADMIN')"
+                                  th:action="@{/mvc/orders/delete/{id}(id=*{id})}" method="post" class="d-inline"
+                                  onsubmit="return confirm('Obrisati narudžbu?')">
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-receipt fs-1 d-block mb-2"></i>Nema narudžbi.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

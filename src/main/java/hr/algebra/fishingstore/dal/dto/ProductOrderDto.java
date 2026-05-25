@@ -15,13 +15,13 @@ public class ProductOrderDto {
     public static class CreateDto {
         @NotNull(message = "Quantity can not be empty")
         @Positive
-        Integer quantity;
+        private Integer quantity;
         @NotNull(message = "Order id can not be empty")
         @Positive
-        Long orderId;
+        private Long orderId;
         @NotNull(message = "Product id can not be empty")
         @Positive
-        Long productId;
+        private Long productId;
     }
 
     @Data
@@ -30,17 +30,17 @@ public class ProductOrderDto {
     public static class EditDto {
         @NotNull(message = "Quantity can not be empty")
         @Positive
-        Integer quantity;
+        private Integer quantity;
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        Integer quantity;
-        BigDecimal priceAtPurchase;
-        Long orderId;
-        Long productId;
+        private Long id;
+        private Integer quantity;
+        private BigDecimal priceAtPurchase;
+        private Long orderId;
+        private Long productId;
     }
 }

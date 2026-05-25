@@ -1,124 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/base}"
-      lang="hr">
-<head>
-    <title>Nova adresa</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}" lang="hr">
+<head><title>Nova adresa</title></head>
 <body>
-
 <div layout:fragment="content">
-
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/mvc/addresses}">Adrese</a></li>
-            <li class="breadcrumb-item active">Nova adresa</li>
-        </ol>
-    </nav>
-
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-plus-circle me-2"></i>Nova adresa
-                    </h5>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-plus-circle me-2 text-primary"></i>Nova adresa</h4>
+        <a th:href="@{/mvc/addresses}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+    <div class="card shadow-sm" style="max-width:520px;">
+        <div class="card-body">
+            <form th:action="@{/mvc/addresses/create}" th:object="${addresses}" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Ulica <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{street}" th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'" placeholder="npr. Ilica 10"/>
+                    <div class="invalid-feedback" th:errors="*{street}"></div>
                 </div>
-
-                <div class="card-body">
-                    <!--/*@thymesVar id="address" type="hr.algebra.fishingstore.dal.dto.AddressDto.CreateDto"*/-->
-                    <form th:action="@{/mvc/addresses/create}"
-                          th:object="${address}"
-                          method="post"
-                          novalidate>
-
-                        <div class="mb-3">
-                            <label for="street" class="form-label fw-semibold">
-                                <i class="bi bi-signpost me-1"></i>Ulica
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   id="street"
-                                   th:field="*{street}"
-                                   th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'"
-                                   class="form-control"
-                                   placeholder="npr. Ilica 10"/>
-                            <div class="invalid-feedback"
-                                 th:if="${#fields.hasErrors('street')}"
-                                 th:errors="*{street}">Greška</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="city" class="form-label fw-semibold">
-                                <i class="bi bi-building me-1"></i>Grad
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   id="city"
-                                   th:field="*{city}"
-                                   th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'"
-                                   class="form-control"
-                                   placeholder="npr. Zagreb"/>
-                            <div class="invalid-feedback"
-                                 th:if="${#fields.hasErrors('city')}"
-                                 th:errors="*{city}">Greška</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="postalCode" class="form-label fw-semibold">
-                                <i class="bi bi-mailbox me-1"></i>Poštanski broj
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="number"
-                                   id="postalCode"
-                                   th:field="*{postalCode}"
-                                   th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'"
-                                   class="form-control"
-                                   placeholder="npr. 10000"/>
-                            <div class="invalid-feedback"
-                                 th:if="${#fields.hasErrors('postalCode')}"
-                                 th:errors="*{postalCode}">Greška</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="country" class="form-label fw-semibold">
-                                <i class="bi bi-flag me-1"></i>Država
-                                <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   id="country"
-                                   th:field="*{country}"
-                                   th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'"
-                                   class="form-control"
-                                   placeholder="npr. Hrvatska"/>
-                            <div class="invalid-feedback"
-                                 th:if="${#fields.hasErrors('country')}"
-                                 th:errors="*{country}">Greška</div>
-                        </div>
-
-                        <p class="text-muted small">
-                            <span class="text-danger">*</span> Obavezna polja
-                        </p>
-
-                        <div class="d-flex gap-2 justify-content-end">
-                            <a th:href="@{/mvc/addresses}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg me-1"></i>Odustani
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-floppy me-1"></i>Spremi
-                            </button>
-                        </div>
-
-                    </form>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold">Grad <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{city}" th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'" placeholder="Zagreb"/>
+                        <div class="invalid-feedback" th:errors="*{city}"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold">Poštanski broj <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" th:field="*{postalCode}" th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'" placeholder="10000"/>
+                        <div class="invalid-feedback" th:errors="*{postalCode}"></div>
+                    </div>
                 </div>
-
-            </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Država <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{country}" th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'" placeholder="Hrvatska"/>
+                    <div class="invalid-feedback" th:errors="*{country}"></div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Spremi</button>
+                    <a th:href="@{/mvc/addresses}" class="btn btn-outline-secondary">Odustani</a>
+                </div>
+            </form>
         </div>
     </div>
-
 </div>
-
 </body>
 </html>

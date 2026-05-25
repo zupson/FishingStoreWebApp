@@ -20,17 +20,17 @@ public class ProductDto {
     public abstract static class ProductBaseDto {
         @NotBlank(message = "Name can not be empty")
         @Size(min = 3, max = 150)
-        String name;
+        private String name;
         @NotBlank(message = "Description can not be empty")
         @Size(min = 10, max = 500)
-        String description;
+        private String description;
         @NotNull(message = "Price can not be empty")
         @Positive
-        BigDecimal price;
+        private BigDecimal price;
         boolean onStock;
         @NotNull(message = "Category id can not be empty")
         @Positive
-        Long categoryId;
+        private Long categoryId;
     }
 
     @Data
@@ -45,14 +45,14 @@ public class ProductDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        String name;
-        String description;
-        BigDecimal price;
-        boolean onStock;
-        String imagePath;
-        LocalDateTime createdAt;
-        LocalDateTime updatedAt;
-        Long categoryId;
+        private Long id;
+        private String name;
+        private String description;
+        private BigDecimal price;
+        private boolean onStock;
+        private String imagePath;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private Long categoryId;
     }
 }

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}" lang="hr">
+<head><title>Uredi proizvod</title></head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-pencil me-2 text-primary"></i>Uredi proizvod</h4>
+        <a th:href="@{/mvc/products}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+    <div class="card shadow-sm" style="max-width: 640px;">
+        <div class="card-body">
+            <form th:action="@{/mvc/products/edit/{id}(id=${categoryId})}" th:object="${products}" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Naziv <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
+                    <div class="invalid-feedback" th:errors="*{name}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Opis <span class="text-danger">*</span></label>
+                    <textarea class="form-control" rows="3" th:field="*{description}" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"></textarea>
+                    <div class="invalid-feedback" th:errors="*{description}"></div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold">Cijena (€) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{price}" th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:errors="*{price}"></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-semibold">Kategorija ID <span class="text-danger">*</span></label>
+                        <input type="number" min="1" class="form-control" th:field="*{categoryId}" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:errors="*{categoryId}"></div>
+                    </div>
+                </div>
+                <div class="mb-4 form-check">
+                    <input type="checkbox" class="form-check-input" th:field="*{onStock}" id="onStock"/>
+                    <label class="form-check-label" for="onStock">Na stanju</label>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Spremi izmjene</button>
+                    <a th:href="@{/mvc/products}" class="btn btn-outline-secondary">Odustani</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

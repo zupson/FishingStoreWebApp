@@ -1,7 +1,7 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.ProductOrderDto;
-import hr.algebra.fishingstore.dal.security.RoleBasedAccessConst;
+import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.ProductOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

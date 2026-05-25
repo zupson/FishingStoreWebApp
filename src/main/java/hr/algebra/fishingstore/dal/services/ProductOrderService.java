@@ -15,13 +15,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductOrderService {
+    public static final String PRODUCT_ORDER_NOT_FOUND = "Product-Order Not Found";
+    public static final String ORDER_NOT_FOUND = "Order Not Found";
+    public static final String PRODUCT_NOT_FOUND = "Product Not Found";
+
     private final ProductOrderRepository productOrderRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
 
     public ProductOrderDto.ResponseDto getById(Long id) {
         return mapToResponse(productOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Order Not Found")));
+                .orElseThrow(() -> new RuntimeException(PRODUCT_ORDER_NOT_FOUND)));
     }
 
     public List<ProductOrderDto.ResponseDto> getAll() {
@@ -33,10 +37,10 @@ public class ProductOrderService {
 
     public ProductOrderDto.ResponseDto create(ProductOrderDto.CreateDto dto) {
         Order order = orderRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new RuntimeException("Order Not Found"));
+                .orElseThrow(() -> new RuntimeException(ORDER_NOT_FOUND));
 
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product Not Found"));
+                .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
 
         ProductOrder productOrder = new ProductOrder();
         productOrder.setQuantity(dto.getQuantity());
@@ -49,7 +53,7 @@ public class ProductOrderService {
 
     public ProductOrderDto.ResponseDto update(Long id, ProductOrderDto.EditDto dto) {
         ProductOrder productOrder = productOrderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product Order Not Found"));
+                .orElseThrow(() -> new RuntimeException(PRODUCT_ORDER_NOT_FOUND));
 
         productOrder.setQuantity(dto.getQuantity());
 

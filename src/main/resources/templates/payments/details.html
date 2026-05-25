@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout/base}" lang="hr">
+<head><title>Detalji plaćanja</title></head>
+<body>
+<div layout:fragment="content" th:object="${payments}">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-credit-card me-2 text-primary"></i>Plaćanje #<span th:text="*{id}"></span></h4>
+        <a th:href="@{/mvc/payments}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+
+    <div class="card shadow-sm" style="max-width: 580px;">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-5 text-muted">Iznos</dt>
+                <dd class="col-sm-7 fw-bold text-success" th:text="*{amount} + ' ' + *{currency}"></dd>
+                <dt class="col-sm-5 text-muted">Metoda plaćanja</dt>
+                <dd class="col-sm-7"><span class="badge bg-light text-dark border" th:text="*{paymentMethod}"></span></dd>
+                <dt class="col-sm-5 text-muted">Status</dt>
+                <dd class="col-sm-7">
+                    <span class="badge"
+                          th:classappend="*{paymentStatus.name() == 'PAID'} ? 'bg-success' :
+                                          (*{paymentStatus.name() == 'PENDING'} ? 'bg-warning text-dark' : 'bg-danger')"
+                          th:text="*{paymentStatus}"></span>
+                </dd>
+                <dt class="col-sm-5 text-muted">PayPal Transaction ID</dt>
+                <dd class="col-sm-7 font-monospace small" th:text="*{paypalTransactionId ?: '-'}"></dd>
+                <dt class="col-sm-5 text-muted">Narudžba</dt>
+                <dd class="col-sm-7"><a th:href="@{/mvc/orders/{id}(id=*{orderId})}" th:text="'Narudžba #' + *{orderId}" class="btn btn-sm btn-outline-secondary"></a></dd>
+                <dt class="col-sm-5 text-muted">Plaćeno</dt>
+                <dd class="col-sm-7 small" th:text="*{paidAt != null ? #temporals.format(paidAt,'dd.MM.yyyy HH:mm') : 'Još nije plaćeno'}"></dd>
+                <dt class="col-sm-5 text-muted">Kreirano</dt>
+                <dd class="col-sm-7 small" th:text="*{#temporals.format(createdAt,'dd.MM.yyyy HH:mm')}"></dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            <!-- Samo admin mijenja status plaćanja -->
+            <a sec:authorize="hasRole('ADMIN')"
+               th:href="@{/mvc/payments/edit/{id}(id=*{id})}" class="btn btn-primary btn-sm">
+                <i class="bi bi-pencil me-1"></i>Ažuriraj status
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

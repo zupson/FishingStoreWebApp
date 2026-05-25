@@ -1,63 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/base}">
-<head>
-    <title>Detalji adrese</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}" lang="hr">
+<head><title>Detalji adrese</title></head>
 <body>
-
-<div layout:fragment="content">
-
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/mvc/addresses}">Adrese</a></li>
-            <li class="breadcrumb-item active">Detalji</li>
-        </ol>
-    </nav>
-
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-geo-alt-fill me-2"></i>Detalji adrese
-                    </h5>
-                    <span class="badge bg-secondary" th:text="'ID: ' + ${address.id}">ID: 1</span>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4 text-muted"><i class="bi bi-signpost me-1"></i>Ulica</dt>
-                        <dd class="col-sm-8" th:text="${address.street}">—</dd>
-
-                        <dt class="col-sm-4 text-muted"><i class="bi bi-building me-1"></i>Grad</dt>
-                        <dd class="col-sm-8" th:text="${address.city}">—</dd>
-
-                        <dt class="col-sm-4 text-muted"><i class="bi bi-mailbox me-1"></i>Poštanski broj</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge bg-secondary" th:text="${address.postalCode}">—</span>
-                        </dd>
-
-                        <dt class="col-sm-4 text-muted"><i class="bi bi-flag me-1"></i>Država</dt>
-                        <dd class="col-sm-8 mb-0" th:text="${address.country}">—</dd>
-                    </dl>
-                </div>
-                <div class="card-footer d-flex gap-2 justify-content-end">
-                    <a th:href="@{/mvc/addresses}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Natrag
-                    </a>
-                    <a th:href="@{/mvc/addresses/update/{id}(id=${address.id})}" class="btn btn-primary">
-                        <i class="bi bi-pencil me-1"></i>Uredi
-                    </a>
-                    <form th:action="@{/mvc/addresses/delete/{id}(id=${address.id})}"
-                          method="post"
-                          onsubmit="return confirm('Jesi li siguran?')">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash me-1"></i>Obriši
-                        </button>
-                    </form>
-                </div>
-            </div>
+<div layout:fragment="content" th:object="${addresses}">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-geo-alt me-2 text-primary"></i>Detalji adrese</h4>
+        <a th:href="@{/mvc/addresses}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Nazad</a>
+    </div>
+    <div class="card shadow-sm" style="max-width:500px;">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted">Ulica</dt><dd class="col-sm-8" th:text="*{street}"></dd>
+                <dt class="col-sm-4 text-muted">Grad</dt><dd class="col-sm-8" th:text="*{city}"></dd>
+                <dt class="col-sm-4 text-muted">Poštanski broj</dt><dd class="col-sm-8" th:text="*{postalCode}"></dd>
+                <dt class="col-sm-4 text-muted">Država</dt><dd class="col-sm-8" th:text="*{country}"></dd>
+            </dl>
+        </div>
+        <div class="card-footer d-flex gap-2">
+            <a th:href="@{/mvc/addresses/edit/{id}(id=*{id})}" class="btn btn-primary btn-sm"><i class="bi bi-pencil me-1"></i>Uredi</a>
+            <form th:action="@{/mvc/addresses/delete/{id}(id=*{id})}" method="post" onsubmit="return confirm('Obrisati adresu?')">
+                <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Obriši</button>
+            </form>
         </div>
     </div>
 </div>

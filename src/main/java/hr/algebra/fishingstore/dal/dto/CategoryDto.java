@@ -17,11 +17,11 @@ public class CategoryDto {
     public abstract static class CategoryBaseDto {
         @NotBlank(message = "Name can not be empty.")
         @Size(min = 3, max = 150)
-        String name;
+        private String name;
 
         @NotBlank(message = "Description can not be empty")
         @Size(min = 10, max = 200)
-        String description;
+        private String description;
     }
 
     @Data
@@ -38,10 +38,10 @@ public class CategoryDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        String name;
-        String description;
-        LocalDateTime createdAt;
-        LocalDateTime updatedAt;
+        private Long id;
+        private String name;
+        private String description;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 }

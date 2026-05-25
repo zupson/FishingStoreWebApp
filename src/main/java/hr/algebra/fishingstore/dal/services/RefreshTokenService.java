@@ -5,6 +5,7 @@ import hr.algebra.fishingstore.dal.repos.UserRepository;
 import hr.algebra.fishingstore.model.entities.RefreshToken;
 import hr.algebra.fishingstore.model.entities.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,14 +13,17 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
+    private static final String JWT_EXPIRATION = "${jwt.expiration}";
+
     private final RefreshTokenRepository refreshTokenRepository;
-    private final UserRepository userRepository;
+    @Value(JWT_EXPIRATION)
+    private long jwtExpiration;
 
     public RefreshToken create(User user, String token) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(token);
         refreshToken.setUser(user);
-        refreshToken.setExpiresAt(LocalDateTime.now().plusDays(7));
+        refreshToken.setExpiresAt(LocalDateTime.now().plusDays(jwtExpiration));
         refreshToken.setRevoked(false);
         return refreshTokenRepository.save(refreshToken);
     }

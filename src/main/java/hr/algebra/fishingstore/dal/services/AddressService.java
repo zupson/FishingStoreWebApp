@@ -11,11 +11,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AddressService {
+    public static final String ADDRESS_NOT_FOUND = "Address not found";
     private final AddressRepository addressRepository;
 
     public AddressDto.ResponseDto getById(Long id) {
         return mapToResponseDto(addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found")));
+                .orElseThrow(() -> new RuntimeException(ADDRESS_NOT_FOUND)));
     }
 
     public List<AddressDto.ResponseDto> getAll() {
@@ -38,7 +39,7 @@ public class AddressService {
 
     public AddressDto.ResponseDto update(Long id, AddressDto.EditDto dto) {
         Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new RuntimeException(ADDRESS_NOT_FOUND));
 
         address.setStreet(dto.getStreet());
         address.setCity(dto.getCity());
@@ -49,7 +50,8 @@ public class AddressService {
     }
 
     public boolean delete(Long id) {
-        if (!addressRepository.existsById(id)) return false;
+        if (!addressRepository.existsById(id))
+            return false;
 
         addressRepository.deleteById(id);
         return true;

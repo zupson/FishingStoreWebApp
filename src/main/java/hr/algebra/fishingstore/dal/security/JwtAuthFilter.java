@@ -22,6 +22,8 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
+    public static final String USE_ACCESS_TOKEN = "Use access token";
+    public static final String TOKEN_IS_NOT_VALID = "Token is not valid";
 
     private final JwtService jwtService;
 
@@ -42,18 +44,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             if (!jwtService.isAccessToken(jwt)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Use access token");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, USE_ACCESS_TOKEN);
                 return;
             }
             username = jwtService.extractUsername(jwt);
         } catch (JWTVerificationException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is not valid");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, TOKEN_IS_NOT_VALID);
             return;
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            SecurityContextHolder.getContext()
-                    .setAuthentication(buildAuthentication(request, jwt));
+            SecurityContextHolder.getContext().setAuthentication(buildAuthentication(request, jwt));
         }
         filterChain.doFilter(request, response);
     }
@@ -63,7 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String role = jwtService.extractRole(jwt);
         Long userId = jwtService.extractUserId(jwt);
 
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = List.of(new SimpleGrantedAuthority(role));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 userId, null, simpleGrantedAuthorities);

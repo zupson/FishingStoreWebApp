@@ -15,6 +15,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    public static final String ORDER_NOT_FOUND = "Order Not Found";
+    public static final String USER_NOT_FOUND = "User Not Found";
+    public static final String ADDRESS_NOT_FOUND = "Address Not Found";
+    public static final String CART_NOT_FOUND = "Cart Not Found";
+    public static final String CART_IS_EMPTY = "Cart is empty";
+
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
@@ -24,7 +30,7 @@ public class OrderService {
 
     public OrderDto.ResponseDto getById(Long id) {
         return mapToResponse(orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order Not Found")));
+                .orElseThrow(() -> new RuntimeException(ORDER_NOT_FOUND)));
     }
 
     public List<OrderDto.ResponseDto> getAll() {
@@ -36,17 +42,17 @@ public class OrderService {
 
     @Transactional
     public OrderDto.ResponseDto create(OrderDto.CreateDto dto) {
-
         String currentLoggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
         User user = userRepository.findByUsername(currentLoggedInUsername)
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
         Address address = addressRepository.findById(dto.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Address Not Found"));
+                .orElseThrow(() -> new RuntimeException(ADDRESS_NOT_FOUND));
         Cart cart = cartRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RuntimeException("Cart Not Found"));
+                .orElseThrow(() -> new RuntimeException(CART_NOT_FOUND));
         List<CartProduct> cartProducts = cartProductRepository.findByCart(cart);
 
-        if (cartProducts.isEmpty()) throw new RuntimeException("Cart is empty");
+        if (cartProducts.isEmpty()) throw new RuntimeException(CART_IS_EMPTY);
 
         BigDecimal totalPrice = cartProducts
                 .stream()
@@ -81,7 +87,7 @@ public class OrderService {
 
     public OrderDto.ResponseDto update(Long id, OrderDto.EditDto dto) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order Not Found"));
+                .orElseThrow(() -> new RuntimeException(ORDER_NOT_FOUND));
 
         order.setOrderStatus(dto.getOrderStatus());
 

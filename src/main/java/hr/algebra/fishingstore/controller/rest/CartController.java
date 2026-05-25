@@ -1,7 +1,7 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.CartDto;
-import hr.algebra.fishingstore.dal.security.RoleBasedAccessConst;
+import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

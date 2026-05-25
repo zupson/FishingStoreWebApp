@@ -1,6 +1,7 @@
 package hr.algebra.fishingstore.controller.mvc;
 
 import hr.algebra.fishingstore.dal.services.LoginHistoryService;
+import hr.algebra.fishingstore.utilities.PathConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(LoginHistoryMvcController.BASE_URL)
 @RequiredArgsConstructor
 public class LoginHistoryMvcController {
-    static final String BASE_URL = "/mvc/login-histories";
-    private static final String VIEW_PREFIX = "login-histories/";
+    static final String BASE_URL = PathConst.MVC + PathConst.LOGIN_HISTORIES;
+    private static final String LIST_VIEW = PathConst.LOGIN_HISTORIES + PathConst.LIST;
+    private static final String DETAILS_VIEW = PathConst.LOGIN_HISTORIES + PathConst.DETAILS;
     private static final String MODEL_KEY = "loginHistories";
-    private static final String LIST_VIEW = VIEW_PREFIX + "list";
-    private static final String DETAILS_VIEW = VIEW_PREFIX + "details";
 
     private final LoginHistoryService loginHistoryService;
 
@@ -26,7 +26,7 @@ public class LoginHistoryMvcController {
         return LIST_VIEW;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, loginHistoryService.getById(id));
         return DETAILS_VIEW;

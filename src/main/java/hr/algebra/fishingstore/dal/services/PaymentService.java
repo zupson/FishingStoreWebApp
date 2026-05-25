@@ -15,12 +15,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
+    public static final String PAYMENT_NOT_FOUND = "Payment Not Found";
+    public static final String ORDER_NOT_FOUND = "Order Not Found";
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
 
     public PaymentDto.ResponseDto getById(Long id) {
         return mapToResponse(paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment Not Found")));
+                .orElseThrow(() -> new RuntimeException(PAYMENT_NOT_FOUND)));
     }
 
     public List<PaymentDto.ResponseDto> getAll() {
@@ -32,7 +34,7 @@ public class PaymentService {
 
     public PaymentDto.ResponseDto create(PaymentDto.CreateDto dto) {
         Order order = orderRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new RuntimeException("Order Not Found"));
+                .orElseThrow(() -> new RuntimeException(ORDER_NOT_FOUND));
 
         Payment payment = new Payment();
         payment.setAmount(order.getTotalPrice());
@@ -47,7 +49,7 @@ public class PaymentService {
 
     public PaymentDto.ResponseDto update(Long id, PaymentDto.EditDto dto) {
         Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment Not Found"));
+                .orElseThrow(() -> new RuntimeException(PAYMENT_NOT_FOUND));
 
         payment.setPaymentStatus(dto.getPaymentStatus());
         payment.setPaypalTransactionId(dto.getPaypalTransactionId());

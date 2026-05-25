@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CartService {
+    public static final String CART_NOT_FOUND_FOR_USER = "Cart not found for user: ";
+
     private final CartRepository cartRepository;
 
     public CartDto.ResponseDto getByUserId(Long userId) {
         return mapToResponseDto(cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId)));
+                .orElseThrow(() -> new RuntimeException(CART_NOT_FOUND_FOR_USER + userId)));
     }
 
     private CartDto.ResponseDto mapToResponseDto(Cart cart) {

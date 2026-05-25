@@ -3,6 +3,7 @@ package hr.algebra.fishingstore.controller.mvc;
 import hr.algebra.fishingstore.dal.dto.OrderDto;
 import hr.algebra.fishingstore.dal.dto.PaymentDto;
 import hr.algebra.fishingstore.dal.services.PaymentService;
+import hr.algebra.fishingstore.utilities.PathConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,14 +15,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(PaymentMvcController.BASE_URL)
 @RequiredArgsConstructor
 public class PaymentMvcController {
-    static final String BASE_URL = "/mvc/payments";
-    private static final String REDIRECT_LIST = "redirect:" + BASE_URL;
-    private static final String VIEW_PREFIX = "payments/";
-    private static final String LIST_VIEW = VIEW_PREFIX + "list";
-    private static final String DETAILS_VIEW = VIEW_PREFIX + "details";
-    private static final String FORM_CREATE = VIEW_PREFIX + "form-create";
-    private static final String FORM_UPDATE = VIEW_PREFIX + "form-update";
+    static final String BASE_URL = PathConst.MVC + PathConst.PAYMENTS;
+
+    private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
+
+    private static final String LIST_VIEW = PathConst.PAYMENTS + PathConst.LIST;
+    private static final String DETAILS_VIEW = PathConst.PAYMENTS + PathConst.DETAILS;
+    private static final String FORM_CREATE_VIEW = PathConst.PAYMENTS + PathConst.FORM_CREATE;
+    private static final String FORM_UPDATE_VIEW = PathConst.PAYMENTS + PathConst.FORM_UPDATE;
     private static final String MODEL_KEY = "payments";
+    public static final String ORDER_ID = "orderId";
 
     private final PaymentService paymentService;
 
@@ -31,30 +34,30 @@ public class PaymentMvcController {
         return LIST_VIEW;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, paymentService.getById(id));
         return DETAILS_VIEW;
     }
 
-    @GetMapping("/new")
+    @GetMapping(PathConst.NEW)
     public String createForm(Model model) {
         model.addAttribute(MODEL_KEY, new OrderDto.CreateDto());
-        return FORM_CREATE;
+        return FORM_CREATE_VIEW;
     }
 
-    @PostMapping("/create")
+    @PostMapping(PathConst.CREATE)
     public String create(@Valid @ModelAttribute(MODEL_KEY) PaymentDto.CreateDto createDto,
                          BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            return FORM_CREATE;
-        }
+        if (bindingResult.hasErrors())
+            return FORM_CREATE_VIEW;
+
         paymentService.create(createDto);
         return REDIRECT_LIST;
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping(PathConst.EDIT + PathConst.ID)
     public String editForm(@PathVariable Long id, Model model) {
         PaymentDto.ResponseDto payment = paymentService.getById(id);
 
@@ -63,17 +66,17 @@ public class PaymentMvcController {
         editDto.setPaypalTransactionId(payment.getPaypalTransactionId());
 
         model.addAttribute(MODEL_KEY, editDto);
-        model.addAttribute("orderId", id);
-        return FORM_UPDATE;
+        model.addAttribute(ORDER_ID, id);
+        return FORM_UPDATE_VIEW;
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping(PathConst.UPDATE + PathConst.ID)
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute(MODEL_KEY) PaymentDto.EditDto editDto,
                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return FORM_UPDATE;
-        }
+        if (bindingResult.hasErrors())
+            return FORM_UPDATE_VIEW;
+
         paymentService.update(id, editDto);
         return REDIRECT_LIST;
     }

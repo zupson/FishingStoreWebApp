@@ -1,89 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/base}">
-<head>
-    <title>Adrese</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}" lang="hr">
+<head><title>Adrese</title></head>
 <body>
-
 <div layout:fragment="content">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="mb-0 fw-bold">
-                <i class="bi bi-geo-alt-fill text-primary me-2"></i>Adrese
-            </h2>
-            <p class="text-muted mb-0">Upravljanje adresama</p>
-        </div>
-        <a th:href="@{/mvc/addresses/create}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>Nova adresa
-        </a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-geo-alt me-2 text-primary"></i>Adrese</h4>
+        <a th:href="@{/mvc/addresses/new}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Nova adresa</a>
     </div>
-
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i>
-        <span th:text="${successMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-
     <div class="card shadow-sm">
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col"><i class="bi bi-signpost me-1"></i>Ulica</th>
-                        <th scope="col"><i class="bi bi-building me-1"></i>Grad</th>
-                        <th scope="col"><i class="bi bi-mailbox me-1"></i>Poštanski broj</th>
-                        <th scope="col"><i class="bi bi-flag me-1"></i>Država</th>
-                        <th scope="col" class="text-end">Akcije</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:if="${#lists.isEmpty(addresses)}">
-                        <td colspan="6" class="text-center py-5 text-muted">
-                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                            Nema adresa. <a th:href="@{/mvc/addresses/new}">Dodaj prvu adresu.</a>
-                        </td>
-                    </tr>
-                    <tr th:each="address, stat : ${addresses}">
-                        <td class="text-muted" th:text="${stat.count}">1</td>
-                        <td th:text="${address.street}">Ulica</td>
-                        <td th:text="${address.city}">Grad</td>
-                        <td>
-                            <span class="badge bg-secondary" th:text="${address.postalCode}">10000</span>
-                        </td>
-                        <td th:text="${address.country}">Hrvatska</td>
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th>#</th><th>Ulica</th><th>Grad</th><th>Poštanski broj</th><th>Država</th><th class="text-end">Akcije</th></tr></thead>
+                <tbody>
+                    <tr th:each="a : ${addresses}" th:object="${a}">
+                        <td th:text="*{id}" class="text-muted small"></td>
+                        <td th:text="*{street}"></td><td th:text="*{city}"></td>
+                        <td th:text="*{postalCode}"></td><td th:text="*{country}"></td>
                         <td class="text-end">
-                            <a th:href="@{/mvc/addresses/{id}(id=${address.id})}"
-                               class="btn btn-sm btn-outline-secondary me-1" title="Detalji">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a th:href="@{/mvc/addresses/update/{id}(id=${address.id})}"
-                               class="btn btn-sm btn-outline-primary me-1" title="Uredi">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <form th:action="@{/mvc/addresses/delete/{id}(id=${address.id})}"
-                                  method="post" class="d-inline"
-                                  onsubmit="return confirm('Jesi li siguran da želiš obrisati ovu adresu?')">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Obriši">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                            <a th:href="@{/mvc/addresses/{id}(id=*{id})}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-eye"></i></a>
+                            <a th:href="@{/mvc/addresses/edit/{id}(id=*{id})}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></a>
+                            <form th:action="@{/mvc/addresses/delete/{id}(id=*{id})}" method="post" class="d-inline" onsubmit="return confirm('Obrisati adresu?')">
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                             </form>
                         </td>
                     </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer text-muted small" th:if="${not #lists.isEmpty(addresses)}">
-            Ukupno: <strong th:text="${#lists.size(addresses)}">0</strong> adresa
+                    <tr th:if="${#lists.isEmpty(addresses)}"><td colspan="6" class="text-center text-muted py-4">Nema adresa.</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>
-
 </body>
 </html>

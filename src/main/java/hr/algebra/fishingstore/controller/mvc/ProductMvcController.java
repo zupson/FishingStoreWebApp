@@ -2,6 +2,7 @@ package hr.algebra.fishingstore.controller.mvc;
 
 import hr.algebra.fishingstore.dal.dto.ProductDto;
 import hr.algebra.fishingstore.dal.services.ProductService;
+import hr.algebra.fishingstore.utilities.PathConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(ProductMvcController.BASE_URL)
 @RequiredArgsConstructor
 public class ProductMvcController {
-    static final String BASE_URL = "/mvc/products";
+    static final String BASE_URL = PathConst.MVC + PathConst.PRODUCTS;
 
-    private static final String REDIRECT_LIST = "redirect:" + BASE_URL;
-    private static final String VIEW_PREFIX = "products/";
-    private static final String LIST_VIEW = VIEW_PREFIX + "list";
-    private static final String DETAILS_VIEW = VIEW_PREFIX + "details";
-    private static final String FORM_CREATE = VIEW_PREFIX + "form-create";
-    private static final String FORM_UPDATE = VIEW_PREFIX + "form-update";
+    private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
+    private static final String LIST_VIEW = PathConst.PRODUCTS + PathConst.LIST;
+    private static final String DETAILS_VIEW = PathConst.PRODUCTS + PathConst.DETAILS;
+    private static final String FORM_CREATE_VIEW = PathConst.PRODUCTS + PathConst.FORM_CREATE;
+    private static final String FORM_UPDATE_VIEW = PathConst.PRODUCTS + PathConst.FORM_UPDATE;
     private static final String MODEL_KEY = "products";
+    public static final String CATEGORY_ID = "categoryId";
 
     private final ProductService productService;
 
@@ -31,29 +32,29 @@ public class ProductMvcController {
         return LIST_VIEW;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, productService.getById(id));
         return DETAILS_VIEW;
     }
 
-    @GetMapping("/new")
+    @GetMapping(PathConst.NEW)
     public String createForm(Model model) {
         model.addAttribute(MODEL_KEY, new ProductDto.CreateDto());
-        return FORM_CREATE;
+        return FORM_CREATE_VIEW;
     }
 
-    @PostMapping("/create")
+    @PostMapping(PathConst.CREATE)
     public String create(@Valid @ModelAttribute(MODEL_KEY) ProductDto.CreateDto createDto, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            return FORM_CREATE;
-        }
+        if (bindingResult.hasErrors())
+            return FORM_CREATE_VIEW;
+
         productService.create(createDto);
         return REDIRECT_LIST;
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping(PathConst.EDIT + PathConst.ID)
     public String editForm(@PathVariable Long id, Model model) {
         ProductDto.ResponseDto product = productService.getById(id);
 
@@ -65,22 +66,22 @@ public class ProductMvcController {
         editDto.setCategoryId(product.getCategoryId());
 
         model.addAttribute(MODEL_KEY, editDto);
-        model.addAttribute("categoryId", id);
-        return FORM_UPDATE;
+        model.addAttribute(CATEGORY_ID, id);
+        return FORM_UPDATE_VIEW;
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping(PathConst.EDIT + PathConst.ID)
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute(MODEL_KEY) ProductDto.EditDto editDto,
                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return FORM_UPDATE;
-        }
+        if (bindingResult.hasErrors())
+            return FORM_UPDATE_VIEW;
+
         productService.update(id, editDto);
         return REDIRECT_LIST;
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping(PathConst.DELETE + PathConst.ID)
     public String delete(@PathVariable Long id) {
         productService.delete(id);
         return REDIRECT_LIST;

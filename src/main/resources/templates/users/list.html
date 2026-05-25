@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}" lang="hr">
+<head><title>Korisnici</title></head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="bi bi-people me-2 text-primary"></i>Korisnici</h4>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr><th>#</th><th>Ime i prezime</th><th>Korisničko ime</th><th>Email</th><th>Uloga</th><th>Aktivan</th><th>Registriran</th><th class="text-end">Akcije</th></tr>
+                </thead>
+                <tbody>
+                    <tr th:each="u : ${users}" th:object="${u}">
+                        <td th:text="*{id}" class="text-muted small"></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:32px;height:32px;font-size:.8rem;" th:text="*{firstName.charAt(0)} + *{lastName.charAt(0)}"></div>
+                                <span th:text="*{firstName + ' ' + lastName}"></span>
+                            </div>
+                        </td>
+                        <td class="font-monospace small" th:text="*{username}"></td>
+                        <td class="small" th:text="*{email}"></td>
+                        <td><span class="badge" th:classappend="*{role.name() == 'ADMIN'} ? 'bg-danger' : 'bg-secondary'" th:text="*{role}"></span></td>
+                        <td><i th:if="*{enabled}" class="bi bi-check-circle-fill text-success"></i><i th:unless="*{enabled}" class="bi bi-x-circle-fill text-secondary"></i></td>
+                        <td class="text-muted small" th:text="*{#temporals.format(createdAt,'dd.MM.yyyy')}"></td>
+                        <td class="text-end">
+                            <a th:href="@{/mvc/users/{id}(id=*{id})}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-eye"></i></a>
+                            <a th:href="@{/mvc/users/edit/{id}(id=*{id})}" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil"></i></a>
+                            <form th:action="@{/mvc/users/delete/{id}(id=*{id})}" method="post" class="d-inline" onsubmit="return confirm('Obrisati korisnika?')">
+                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(users)}"><td colspan="8" class="text-center text-muted py-4">Nema korisnika.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

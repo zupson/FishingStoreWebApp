@@ -1,9 +1,8 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.AddressDto;
-import hr.algebra.fishingstore.dal.security.RoleBasedAccessConst;
+import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.AddressService;
-import hr.algebra.fishingstore.model.enums.Role;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

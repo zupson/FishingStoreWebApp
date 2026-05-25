@@ -16,13 +16,13 @@ public class CartProductDto {
     public abstract static class CartProductBaseDto{
         @NotNull(message = "Quantity can not be empty")
         @Min(1)
-        Integer quantity;
+        private Integer quantity;
         @NotNull(message = "Cart id can not be empty")
         @Positive
-        Long cartId;
+        private Long cartId;
         @NotNull(message = "Product id can not be empty")
         @Positive
-        Long productId;
+        private Long productId;
     }
 
     @Data
@@ -37,9 +37,9 @@ public class CartProductDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseDto {
-        Long id;
-        Integer quantity;
-        Long cartId;
-        Long productId;
+        private Long id;
+        private Integer quantity;
+        private Long cartId;
+        private Long productId;
     }
 }

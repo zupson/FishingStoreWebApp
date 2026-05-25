@@ -21,14 +21,18 @@ public class JwtService {
     private static final String TYPE = "type";
     private static final String ACCESS = "access";
     private static final String REFRESH = "refresh";
+    
+    public static final String JWT_EXPIRATION = "${jwt.expiration}";
+    public static final String JWT_REFRESH_EXPIRATION = "${jwt.refresh-expiration}";
+    public static final String JWT_SECRET = "${jwt.secret}";
 
-    @Value("${jwt.secret}")
+    @Value(JWT_SECRET)
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value(JWT_EXPIRATION)
     private Duration expiration;
 
-    @Value("${jwt.refresh-expiration}")
+    @Value(JWT_REFRESH_EXPIRATION)
     private Duration refreshExpiration;
 
     private Algorithm algorithm;

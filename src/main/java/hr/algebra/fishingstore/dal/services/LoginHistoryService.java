@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LoginHistoryService {
+    public static final String LOGIN_HISTORY_NOT_FOUND = "Login history not found.";
+    public static final String USER_NOT_FOUND = "User not found.";
+
     private final LoginHistoryRepository loginHistoryRepository;
     private final UserRepository userRepository;
 
@@ -27,14 +30,14 @@ public class LoginHistoryService {
 
     public LoginHistoryDto.ResponseDto getById(Long id) {
         return mapToResponseDto(loginHistoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Login history not found.")));
+                .orElseThrow(() -> new RuntimeException(LOGIN_HISTORY_NOT_FOUND)));
     }
 
     public LoginHistoryDto.ResponseDto create(HttpServletRequest request) {
         String currentLoggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByUsername(currentLoggedInUsername)
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
         LoginHistory loginHistory = new LoginHistory();
         loginHistory.setIpAddress(request.getRemoteAddr());
