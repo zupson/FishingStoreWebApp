@@ -6,7 +6,9 @@ import hr.algebra.fishingstore.dal.repos.PaymentRepository;
 import hr.algebra.fishingstore.model.entities.Order;
 import hr.algebra.fishingstore.model.entities.Payment;
 import hr.algebra.fishingstore.model.enums.PaymentStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,58 +21,44 @@ public class PaymentService {
     public static final String ORDER_NOT_FOUND = "Order Not Found";
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final ModelMapper modelMapper;
 
     public PaymentDto.ResponseDto getById(Long id) {
-        return mapToResponse(paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(PAYMENT_NOT_FOUND)));
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(PAYMENT_NOT_FOUND));
+        return modelMapper.map(payment, PaymentDto.ResponseDto.class);
     }
 
     public List<PaymentDto.ResponseDto> getAll() {
         return paymentRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(p -> modelMapper.map(p, PaymentDto.ResponseDto.class))
                 .toList();
     }
 
     public PaymentDto.ResponseDto create(PaymentDto.CreateDto dto) {
         Order order = orderRepository.findById(dto.getOrderId())
-                .orElseThrow(() -> new RuntimeException(ORDER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND));
 
         Payment payment = new Payment();
         payment.setAmount(order.getTotalPrice());
+        payment.setOrder(order);
+        payment.setPaymentStatus(PaymentStatus.PENDING);
         payment.setCurrency(dto.getCurrency());
         payment.setPaymentMethod(dto.getPaymentMethod());
-        payment.setPaymentStatus(PaymentStatus.PENDING);
-        payment.setPaypalTransactionId(dto.getPaypalTransactionId());
-        payment.setOrder(order);
 
-        return mapToResponse(paymentRepository.save(payment));
+        return modelMapper.map(paymentRepository.save(payment), PaymentDto.ResponseDto.class);
     }
 
     public PaymentDto.ResponseDto update(Long id, PaymentDto.EditDto dto) {
         Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(PAYMENT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(PAYMENT_NOT_FOUND));
 
-        payment.setPaymentStatus(dto.getPaymentStatus());
-        payment.setPaypalTransactionId(dto.getPaypalTransactionId());
-        if (dto.getPaymentStatus() == PaymentStatus.COMPLETED) {
+        modelMapper.map(dto, payment);
+
+        if (dto.getPaymentStatus() == PaymentStatus.PAID)
             payment.setPaidAt(LocalDateTime.now());
-        }
 
-        return mapToResponse(paymentRepository.save(payment));
-    }
-
-    private PaymentDto.ResponseDto mapToResponse(Payment payment) {
-        return new PaymentDto.ResponseDto(
-                payment.getId(),
-                payment.getAmount(),
-                payment.getCurrency(),
-                payment.getPaymentMethod(),
-                payment.getPaymentStatus(),
-                payment.getPaidAt(),
-                payment.getCreatedAt(),
-                payment.getOrder().getId(),
-                payment.getPaypalTransactionId()
-        );
+        return modelMapper.map(paymentRepository.save(payment), PaymentDto.ResponseDto.class);
     }
 }

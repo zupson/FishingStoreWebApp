@@ -17,5 +17,6 @@ public class LoginHistoryDto {
         private boolean success;
         private LocalDateTime loginAt;
         private Long userId;
+        private String username;
     }
 }

@@ -1,7 +1,7 @@
 package hr.algebra.fishingstore.dal.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import hr.algebra.fishingstore.dal.services.JwtService;
+import hr.algebra.fishingstore.dal.services.token.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

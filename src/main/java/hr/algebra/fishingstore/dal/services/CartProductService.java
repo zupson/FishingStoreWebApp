@@ -7,7 +7,9 @@ import hr.algebra.fishingstore.dal.repos.ProductRepository;
 import hr.algebra.fishingstore.model.entities.Cart;
 import hr.algebra.fishingstore.model.entities.CartProduct;
 import hr.algebra.fishingstore.model.entities.Product;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,64 +24,58 @@ public class CartProductService {
     private final CartProductRepository cartProductRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
     public CartProductDto.ResponseDto getById(Long id) {
-        return mapToResponse(cartProductRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND)));
+        CartProduct cartProduct = cartProductRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(CART_PRODUCT_NOT_FOUND));
+        return modelMapper.map(cartProduct, CartProductDto.ResponseDto.class);
     }
 
     public List<CartProductDto.ResponseDto> getAll() {
         return cartProductRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(cp -> modelMapper.map(cp, CartProductDto.ResponseDto.class))
                 .toList();
     }
 
     public CartProductDto.ResponseDto create(CartProductDto.CreateDto dto) {
         Cart cart = cartRepository.findById(dto.getCartId())
-                .orElseThrow(() -> new RuntimeException(CART_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(CART_NOT_FOUND));
 
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
 
-        CartProduct cartProduct = new CartProduct();
-        cartProduct.setQuantity(dto.getQuantity());
+        CartProduct cartProduct = modelMapper.map(dto, CartProduct.class);
         cartProduct.setCart(cart);
         cartProduct.setProduct(product);
 
-        return mapToResponse(cartProductRepository.save(cartProduct));
+        return modelMapper.map(cartProductRepository.save(cartProduct), CartProductDto.ResponseDto.class);
     }
 
     public CartProductDto.ResponseDto update(Long id, CartProductDto.EditDto dto) {
         CartProduct cartProduct = cartProductRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(CART_PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(CART_PRODUCT_NOT_FOUND));
 
         Cart cart = cartRepository.findById(dto.getCartId())
-                .orElseThrow(() -> new RuntimeException(CART_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(CART_NOT_FOUND));
 
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException(PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
 
-        cartProduct.setQuantity(dto.getQuantity());
+        modelMapper.map(dto, cartProduct);
+
         cartProduct.setCart(cart);
         cartProduct.setProduct(product);
 
-        return mapToResponse(cartProductRepository.save(cartProduct));
+        return modelMapper.map(cartProductRepository.save(cartProduct), CartProductDto.ResponseDto.class);
     }
 
     public boolean delete(Long id) {
-        if (!cartProductRepository.existsById(id)) return false;
+        if (!cartProductRepository.existsById(id))
+            return false;
 
         cartProductRepository.deleteById(id);
         return true;
-    }
-
-    private CartProductDto.ResponseDto mapToResponse(CartProduct product) {
-        return new CartProductDto.ResponseDto(
-                product.getId(),
-                product.getQuantity(),
-                product.getCart().getId(),
-                product.getProduct().getId()
-        );
     }
 }

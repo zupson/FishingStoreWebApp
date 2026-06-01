@@ -1,6 +1,7 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.ProductOrderDto;
+import hr.algebra.fishingstore.utilities.PathConst;
 import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.ProductOrderService;
 import jakarta.validation.Valid;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/product-orders")
+@RequestMapping(ProductOrderController.BASE_URL)
 @RequiredArgsConstructor
 public class ProductOrderController {
+    static final String BASE_URL = PathConst.API + PathConst.PRODUCT_ORDERS;
     private final ProductOrderService productOrderService;
 
     @GetMapping
@@ -24,7 +26,7 @@ public class ProductOrderController {
         return ResponseEntity.ok(productOrderService.getAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_OR_RESOURCE_OWNER)
     public ResponseEntity<ProductOrderDto.ResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(productOrderService.getById(id));
@@ -36,9 +38,10 @@ public class ProductOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productOrderService.create(createDto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
-    public ResponseEntity<ProductOrderDto.ResponseDto> update(@PathVariable Long id, @Valid @RequestBody ProductOrderDto.EditDto editDto) {
+    public ResponseEntity<ProductOrderDto.ResponseDto> update(@PathVariable Long id,
+                                                              @Valid @RequestBody ProductOrderDto.EditDto editDto) {
         return ResponseEntity.ok(productOrderService.update(id, editDto));
     }
 }

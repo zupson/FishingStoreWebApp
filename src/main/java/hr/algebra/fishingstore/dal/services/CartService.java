@@ -3,7 +3,9 @@ package hr.algebra.fishingstore.dal.services;
 import hr.algebra.fishingstore.dal.dto.CartDto;
 import hr.algebra.fishingstore.dal.repos.CartRepository;
 import hr.algebra.fishingstore.model.entities.Cart;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,17 +14,12 @@ public class CartService {
     public static final String CART_NOT_FOUND_FOR_USER = "Cart not found for user: ";
 
     private final CartRepository cartRepository;
+    private final ModelMapper modelMapper;
 
     public CartDto.ResponseDto getByUserId(Long userId) {
-        return mapToResponseDto(cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException(CART_NOT_FOUND_FOR_USER + userId)));
-    }
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException(CART_NOT_FOUND_FOR_USER + userId));
 
-    private CartDto.ResponseDto mapToResponseDto(Cart cart) {
-        return new CartDto.ResponseDto(
-                cart.getId(),
-                cart.getUpdatedAt(),
-                cart.getUser().getId()
-        );
+        return  modelMapper.map(cart, CartDto.ResponseDto.class);
     }
 }

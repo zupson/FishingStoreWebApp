@@ -1,8 +1,10 @@
 package hr.algebra.fishingstore.controller.mvc;
 
 import hr.algebra.fishingstore.dal.dto.OrderDto;
+import hr.algebra.fishingstore.dal.services.AddressService;
 import hr.algebra.fishingstore.dal.services.OrderService;
 import hr.algebra.fishingstore.utilities.PathConst;
+import hr.algebra.fishingstore.utilities.ViewPathConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,41 +18,58 @@ import org.springframework.web.bind.annotation.*;
 public class OrderMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.ORDERS;
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
-    private static final String LIST_VIEW = PathConst.ORDERS + PathConst.LIST;
-    private static final String DETAILS_VIEW = PathConst.ORDERS + PathConst.DETAILS;
-    private static final String FORM_CREATE_VIEW = PathConst.ORDERS + PathConst.FORM_CREATE;
-    private static final String FORM_UPDATE_VIEW = PathConst.ORDERS + PathConst.FORM_UPDATE;
     private static final String MODEL_KEY = "orders";
+    private static final String ORDER_ID = "orderId";
+    private static final String PAY_PAL_SUCCESS = "/paypal/success";
+    private static final String PAY_PAL_CANCEL = "/paypal/cancel";
+    private static final String SLASH = "/";
 
     private final OrderService orderService;
+    private final AddressService addressService;
 
     @GetMapping
     public String getAll(Model model) {
         model.addAttribute(MODEL_KEY, orderService.getAll());
-        return LIST_VIEW;
+        return ViewPathConst.ORDERS_LIST_VIEW;
     }
 
     @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, orderService.getById(id));
-        return DETAILS_VIEW;
+        return ViewPathConst.ORDERS_DETAILS_VIEW;
     }
 
     @GetMapping(PathConst.NEW)
     public String createForm(Model model) {
         model.addAttribute(MODEL_KEY, new OrderDto.CreateDto());
-        return FORM_CREATE_VIEW;
+        model.addAttribute(AddressMvcController.MODEL_KEY, addressService.getAll());
+        return ViewPathConst.ORDERS_FORM_CREATE_VIEW;
     }
-
     @PostMapping(PathConst.CREATE)
     public String create(@Valid @ModelAttribute(MODEL_KEY) OrderDto.CreateDto createDto,
                          BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
-            return FORM_CREATE_VIEW;
+            return ViewPathConst.ORDERS_FORM_CREATE_VIEW;
 
-        orderService.create(createDto);
+        OrderDto.ResponseDto response = orderService.create(createDto);
+
+        if (response.getApprovalUrl() != null)
+            return PathConst.REDIRECT_KEYWORD + response.getApprovalUrl();
+
         return REDIRECT_LIST;
+    }
+
+    @GetMapping(PAY_PAL_SUCCESS)
+    public String paypalSuccess(@RequestParam String token, @RequestParam Long orderId) {
+        orderService.confirmPayPalPayment(token, orderId);
+        return PathConst.REDIRECT_KEYWORD + BASE_URL + SLASH + orderId;
+    }
+
+    @GetMapping(PAY_PAL_CANCEL)
+    public String paypalCancel(@RequestParam Long orderId) {
+        orderService.cancelOrder(orderId);
+        return  PathConst.REDIRECT_KEYWORD + BASE_URL + SLASH + orderId;
     }
 
     @GetMapping(PathConst.EDIT + PathConst.ID)
@@ -61,8 +80,8 @@ public class OrderMvcController {
         editDto.setOrderStatus(order.getOrderStatus());
 
         model.addAttribute(MODEL_KEY, editDto);
-        model.addAttribute("orderId", id);
-        return FORM_UPDATE_VIEW;
+        model.addAttribute(ORDER_ID, id);
+        return ViewPathConst.ORDERS_FORM_UPDATE_VIEW;
     }
 
     @PostMapping(PathConst.UPDATE + PathConst.ID)
@@ -70,7 +89,7 @@ public class OrderMvcController {
                          @Valid @ModelAttribute(MODEL_KEY) OrderDto.EditDto editDto,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors())
-            return FORM_UPDATE_VIEW;
+            return ViewPathConst.ORDERS_FORM_UPDATE_VIEW;
         
         orderService.update(id, editDto);
         return REDIRECT_LIST;

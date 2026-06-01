@@ -8,13 +8,16 @@
 <div layout:fragment="content" th:object="${products}">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0"><i class="bi bi-bag me-2 text-primary"></i>Detalji proizvoda</h4>
-        <a th:href="@{/mvc/products}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i>Nazad
-        </a>
+        <h4 class="mb-0">Detalji proizvoda</h4>
+        <a th:href="${categoryId != null ? '/mvc/products/categories/' + categoryId : '/mvc/categories'}"
+           class="btn btn-outline-secondary btn-sm">Nazad</a>
     </div>
 
-    <div class="card shadow-sm" style="max-width: 640px;">
+    <div class="card shadow-sm mx-auto" style="max-width: 640px;">
+        <img th:src="@{/{path}(path=*{imagePath})}"
+             class="card-img-top"
+             style="max-height: 300px; object-fit: contain;"
+             alt="Slika proizvoda"/>
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
                 <h5 class="fw-bold mb-0" th:text="*{name}"></h5>
@@ -34,12 +37,12 @@
             </dl>
         </div>
         <div class="card-footer d-flex gap-2">
-            <!-- Svi mogu dodati u košaricu -->
+
             <a th:href="@{/mvc/cart-products/new(productId=*{id})}"
                class="btn btn-primary">
                 <i class="bi bi-cart-plus me-1"></i>Dodaj u košaricu
             </a>
-            <!-- Admin akcije -->
+
             <a sec:authorize="hasRole('ADMIN')"
                th:href="@{/mvc/products/edit/{id}(id=*{id})}"
                class="btn btn-outline-primary">

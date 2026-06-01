@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Prijava</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow border-0">
+                <div class="card-body p-4">
+
+                    <div class="text-center mb-4">
+                        <i class="bi bi-fish fs-1 text-dark"></i>
+                        <h4 class="fw-bold mt-2">Dobrodošli nazad</h4>
+
+                    </div>
+
+                    <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Pogrešno korisničko ime ili lozinka.
+                    </div>
+
+                    <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Uspješno ste se odjavili.
+                    </div>
+
+                    <form th:action="@{/mvc/auth/login}" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Korisničko ime</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-person text-muted"></i>
+                                </span>
+                                <input type="text"
+                                       name="username"
+                                       class="form-control border-start-0"
+                                       placeholder="Unesite korisničko ime"/>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Lozinka</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-lock text-muted"></i>
+                                </span>
+                                <input type="password"
+                                       name="password"
+                                       class="form-control border-start-0"
+                                       placeholder="Unesite lozinku"/>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 py-2 fw-semibold">
+                            Prijava
+                        </button>
+                    </form>
+
+                    <hr class="my-3"/>
+
+                    <p class="text-center text-muted small mb-0">
+                        Nemate račun?
+                        <a th:href="@{/mvc/auth/register}" class="text-dark fw-semibold text-decoration-none">
+                            Registrirajte se
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

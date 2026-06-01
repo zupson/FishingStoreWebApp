@@ -5,8 +5,10 @@ import hr.algebra.fishingstore.dal.repos.LoginHistoryRepository;
 import hr.algebra.fishingstore.dal.repos.UserRepository;
 import hr.algebra.fishingstore.model.entities.LoginHistory;
 import hr.algebra.fishingstore.model.entities.User;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -20,39 +22,39 @@ public class LoginHistoryService {
 
     private final LoginHistoryRepository loginHistoryRepository;
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+
+    public LoginHistoryDto.ResponseDto getById(Long id) {
+        LoginHistory loginHistory = loginHistoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(LOGIN_HISTORY_NOT_FOUND));
+
+        LoginHistoryDto.ResponseDto dto = modelMapper.map(loginHistory, LoginHistoryDto.ResponseDto.class);
+        dto.setUsername(loginHistory.getUser().getUsername());
+        return dto;
+    }
 
     public List<LoginHistoryDto.ResponseDto> getAll() {
         return loginHistoryRepository.findAll()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(lh -> {
+                    LoginHistoryDto.ResponseDto dto = modelMapper.map(lh, LoginHistoryDto.ResponseDto.class);
+                    dto.setUsername(lh.getUser().getUsername());
+                    return dto;
+                })
                 .toList();
-    }
-
-    public LoginHistoryDto.ResponseDto getById(Long id) {
-        return mapToResponseDto(loginHistoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(LOGIN_HISTORY_NOT_FOUND)));
     }
 
     public LoginHistoryDto.ResponseDto create(HttpServletRequest request) {
         String currentLoggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findByUsername(currentLoggedInUsername)
-                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
 
         LoginHistory loginHistory = new LoginHistory();
         loginHistory.setIpAddress(request.getRemoteAddr());
+        loginHistory.setSuccess(true);
         loginHistory.setUser(user);
 
-        return mapToResponseDto(loginHistoryRepository.save(loginHistory));
-    }
-
-    private LoginHistoryDto.ResponseDto mapToResponseDto(LoginHistory loginHistory) {
-        return new LoginHistoryDto.ResponseDto(
-                loginHistory.getId(),
-                loginHistory.getIpAddress(),
-                loginHistory.isSuccess(),
-                loginHistory.getLoginAt(),
-                loginHistory.getUser() != null ? loginHistory.getUser().getId() : null
-        );
+        return modelMapper.map(loginHistoryRepository.save(loginHistory), LoginHistoryDto.ResponseDto.class);
     }
 }

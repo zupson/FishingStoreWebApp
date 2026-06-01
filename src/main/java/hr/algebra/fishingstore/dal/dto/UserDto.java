@@ -107,4 +107,12 @@ public class UserDto {
         private String refreshToken;
         private UserDto.ResponseDto user;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class LogoutDto {
+        @NotBlank(message = "Refresh token can not be empty")
+        private String refreshToken;
+    }
 }

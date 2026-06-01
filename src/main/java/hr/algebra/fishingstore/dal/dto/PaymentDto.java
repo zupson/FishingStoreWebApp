@@ -36,8 +36,6 @@ public class PaymentDto {
     public static class EditDto {
         @NotNull(message = "Payment status can not be empty")
         private PaymentStatus paymentStatus;
-        @Size(max = 100)
-        private String paypalTransactionId;
     }
 
     @Data

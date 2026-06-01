@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "login_history")
+@Table(name = "login_historys")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

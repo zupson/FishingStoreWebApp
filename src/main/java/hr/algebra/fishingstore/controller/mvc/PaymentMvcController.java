@@ -4,6 +4,7 @@ import hr.algebra.fishingstore.dal.dto.OrderDto;
 import hr.algebra.fishingstore.dal.dto.PaymentDto;
 import hr.algebra.fishingstore.dal.services.PaymentService;
 import hr.algebra.fishingstore.utilities.PathConst;
+import hr.algebra.fishingstore.utilities.ViewPathConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,13 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.PAYMENTS;
-
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
 
-    private static final String LIST_VIEW = PathConst.PAYMENTS + PathConst.LIST;
-    private static final String DETAILS_VIEW = PathConst.PAYMENTS + PathConst.DETAILS;
-    private static final String FORM_CREATE_VIEW = PathConst.PAYMENTS + PathConst.FORM_CREATE;
-    private static final String FORM_UPDATE_VIEW = PathConst.PAYMENTS + PathConst.FORM_UPDATE;
     private static final String MODEL_KEY = "payments";
     public static final String ORDER_ID = "orderId";
 
@@ -31,19 +27,19 @@ public class PaymentMvcController {
     @GetMapping
     public String getAll(Model model) {
         model.addAttribute(MODEL_KEY, paymentService.getAll());
-        return LIST_VIEW;
+        return ViewPathConst.PAYMENTS_LIST_VIEW;
     }
 
     @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, paymentService.getById(id));
-        return DETAILS_VIEW;
+        return ViewPathConst.PAYMENTS_DETAILS_VIEW;
     }
 
     @GetMapping(PathConst.NEW)
     public String createForm(Model model) {
         model.addAttribute(MODEL_KEY, new OrderDto.CreateDto());
-        return FORM_CREATE_VIEW;
+        return ViewPathConst.PAYMENTS_FORM_CREATE_VIEW;
     }
 
     @PostMapping(PathConst.CREATE)
@@ -51,7 +47,7 @@ public class PaymentMvcController {
                          BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
-            return FORM_CREATE_VIEW;
+            return ViewPathConst.PAYMENTS_FORM_CREATE_VIEW;
 
         paymentService.create(createDto);
         return REDIRECT_LIST;
@@ -63,11 +59,10 @@ public class PaymentMvcController {
 
         PaymentDto.EditDto editDto = new PaymentDto.EditDto();
         editDto.setPaymentStatus(payment.getPaymentStatus());
-        editDto.setPaypalTransactionId(payment.getPaypalTransactionId());
 
         model.addAttribute(MODEL_KEY, editDto);
         model.addAttribute(ORDER_ID, id);
-        return FORM_UPDATE_VIEW;
+        return ViewPathConst.PAYMENTS_FORM_UPDATE_VIEW;
     }
 
     @PostMapping(PathConst.UPDATE + PathConst.ID)
@@ -75,7 +70,7 @@ public class PaymentMvcController {
                          @Valid @ModelAttribute(MODEL_KEY) PaymentDto.EditDto editDto,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors())
-            return FORM_UPDATE_VIEW;
+            return ViewPathConst.PAYMENTS_FORM_UPDATE_VIEW;
 
         paymentService.update(id, editDto);
         return REDIRECT_LIST;

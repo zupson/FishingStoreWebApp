@@ -11,18 +11,20 @@
     </div>
     <div class="card shadow-sm" style="max-width: 440px;">
         <div class="card-body">
-            <form th:action="@{/mvc/orders/edit/{id}(id=${orderId})}" th:object="${orders}" method="post">
+            <form th:action="@{/mvc/orders/update/{id}(id=${orderId})}" th:object="${orders}" method="post">
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Status narudžbe <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{orderStatus}" th:classappend="${#fields.hasErrors('orderStatus')} ? 'is-invalid'">
-                        <option value="">-- Odaberi status --</option>
-                        <option value="PENDING">PENDING</option>
-                        <option value="CONFIRMED">CONFIRMED</option>
-                        <option value="PROCESSING">PROCESSING</option>
-                        <option value="SHIPPED">SHIPPED</option>
-                        <option value="DELIVERED">DELIVERED</option>
-                        <option value="CANCELLED">CANCELLED</option>
-                    </select>
+                    <label>
+                        <select class="form-select" th:field="*{orderStatus}" th:classappend="${#fields.hasErrors('orderStatus')} ? 'is-invalid'">
+                            <option value="">-- Odaberi status --</option>
+                            <option value="PENDING">PENDING</option>
+                            <option value="CONFIRMED">CONFIRMED</option>
+                            <option value="PROCESSING">PROCESSING</option>
+                            <option value="SHIPPED">SHIPPED</option>
+                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                    </label>
                     <div class="invalid-feedback" th:errors="*{orderStatus}"></div>
                 </div>
                 <div class="d-flex gap-2">

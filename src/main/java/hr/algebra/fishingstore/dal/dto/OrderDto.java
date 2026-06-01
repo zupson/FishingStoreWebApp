@@ -1,6 +1,7 @@
 package hr.algebra.fishingstore.dal.dto;
 
 import hr.algebra.fishingstore.model.enums.OrderStatus;
+import hr.algebra.fishingstore.model.enums.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,8 @@ public class OrderDto {
         @NotNull(message = "Address id can not be empty")
         @Positive
         private Long addressId;
+        @NotNull(message = "Payment method can not be empty")
+        private PaymentMethod paymentMethod;
     }
 
     @Data
@@ -38,5 +41,6 @@ public class OrderDto {
         private LocalDateTime createdAt;
         private Long addressId;
         private Long userId;
+        private String approvalUrl;
     }
 }

@@ -1,6 +1,7 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.PaymentDto;
+import hr.algebra.fishingstore.utilities.PathConst;
 import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.PaymentService;
 import jakarta.validation.Valid;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping(PaymentController.BASE_URL)
 @RequiredArgsConstructor
 public class PaymentController {
+    static final String BASE_URL = PathConst.API + PathConst.PAYMENTS;
     private final PaymentService paymentService;
 
     @GetMapping
@@ -24,7 +26,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_OR_RESOURCE_OWNER)
     public ResponseEntity<PaymentDto.ResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(paymentService.getById(id));
@@ -36,9 +38,10 @@ public class PaymentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.create(createDto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
-    public ResponseEntity<PaymentDto.ResponseDto> update(@PathVariable Long id, @Valid @RequestBody PaymentDto.EditDto editDto) {
+    public ResponseEntity<PaymentDto.ResponseDto> update(@PathVariable Long id,
+                                                         @Valid @RequestBody PaymentDto.EditDto editDto) {
         return ResponseEntity.ok(paymentService.update(id, editDto));
     }
 }

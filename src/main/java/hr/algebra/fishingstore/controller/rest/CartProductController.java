@@ -1,8 +1,9 @@
 package hr.algebra.fishingstore.controller.rest;
 
 import hr.algebra.fishingstore.dal.dto.CartProductDto;
-import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import hr.algebra.fishingstore.dal.services.CartProductService;
+import hr.algebra.fishingstore.utilities.PathConst;
+import hr.algebra.fishingstore.utilities.RoleBasedAccessConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cart-products")
+@RequestMapping(CartProductController.BASE_URL)
 @RequiredArgsConstructor
 public class CartProductController {
+    static final String BASE_URL = PathConst.API + PathConst.CART_PRODUCTS;
     private final CartProductService cartProductService;
 
     @GetMapping
@@ -24,7 +26,7 @@ public class CartProductController {
         return ResponseEntity.ok(cartProductService.getAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_OR_RESOURCE_OWNER)
     public ResponseEntity<CartProductDto.ResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(cartProductService.getById(id));
@@ -36,13 +38,14 @@ public class CartProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartProductService.create(createDto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_OR_RESOURCE_OWNER)
-    public ResponseEntity<CartProductDto.ResponseDto> update(@PathVariable Long id, @Valid @RequestBody CartProductDto.EditDto editDto) {
+    public ResponseEntity<CartProductDto.ResponseDto> update(@PathVariable Long id,
+                                                             @Valid @RequestBody CartProductDto.EditDto editDto) {
         return ResponseEntity.ok(cartProductService.update(id, editDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_OR_RESOURCE_OWNER)
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = cartProductService.delete(id);

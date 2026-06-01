@@ -3,7 +3,9 @@ package hr.algebra.fishingstore.dal.services;
 import hr.algebra.fishingstore.dal.dto.AddressDto;
 import hr.algebra.fishingstore.dal.repos.AddressRepository;
 import hr.algebra.fishingstore.model.entities.Address;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,40 +15,32 @@ import java.util.List;
 public class AddressService {
     public static final String ADDRESS_NOT_FOUND = "Address not found";
     private final AddressRepository addressRepository;
+    private final ModelMapper modelMapper;
 
     public AddressDto.ResponseDto getById(Long id) {
-        return mapToResponseDto(addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(ADDRESS_NOT_FOUND)));
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ADDRESS_NOT_FOUND));
+        return modelMapper.map(address, AddressDto.ResponseDto.class);
     }
 
     public List<AddressDto.ResponseDto> getAll() {
         return addressRepository.findAll()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(a -> modelMapper.map(a, AddressDto.ResponseDto.class))
                 .toList();
     }
 
     public AddressDto.ResponseDto create(AddressDto.CreateDto dto) {
-        Address address = new Address();
-
-        address.setStreet(dto.getStreet());
-        address.setCity(dto.getCity());
-        address.setPostalCode(dto.getPostalCode());
-        address.setCountry(dto.getCountry());
-
-        return mapToResponseDto(addressRepository.save(address));
+        Address address = modelMapper.map(dto, Address.class);
+        return modelMapper.map(addressRepository.save(address), AddressDto.ResponseDto.class);
     }
 
     public AddressDto.ResponseDto update(Long id, AddressDto.EditDto dto) {
         Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(ADDRESS_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ADDRESS_NOT_FOUND));
 
-        address.setStreet(dto.getStreet());
-        address.setCity(dto.getCity());
-        address.setPostalCode(dto.getPostalCode());
-        address.setCountry(dto.getCountry());
-
-        return mapToResponseDto(addressRepository.save(address));
+        modelMapper.map(dto, address);
+        return modelMapper.map(addressRepository.save(address), AddressDto.ResponseDto.class);
     }
 
     public boolean delete(Long id) {
@@ -55,15 +49,5 @@ public class AddressService {
 
         addressRepository.deleteById(id);
         return true;
-    }
-
-    private AddressDto.ResponseDto mapToResponseDto(Address address) {
-        return new AddressDto.ResponseDto(
-                address.getId(),
-                address.getStreet(),
-                address.getCity(),
-                address.getPostalCode(),
-                address.getCountry()
-        );
     }
 }

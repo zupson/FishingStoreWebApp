@@ -17,7 +17,7 @@
                     <span th:unless="*{success}" class="badge bg-danger fs-6">Neuspješno</span>
                 </dd>
                 <dt class="col-sm-4 text-muted">Korisnik</dt>
-                <dd class="col-sm-8"><a th:href="@{/mvc/users/{id}(id=*{userId})}" th:text="'Korisnik #' + *{userId}" class="btn btn-sm btn-outline-secondary"></a></dd>
+                <dd class="col-sm-8"><a th:href="@{/mvc/users/{id}(id=*{userId})}" th:text="*{username}" class="btn btn-sm btn-outline-secondary"></a></dd>
                 <dt class="col-sm-4 text-muted">Vrijeme</dt><dd class="col-sm-8" th:text="*{#temporals.format(loginAt,'dd.MM.yyyy HH:mm:ss')}"></dd>
             </dl>
         </div>

@@ -11,7 +11,7 @@
     </div>
     <div class="card shadow-sm" style="max-width: 640px;">
         <div class="card-body">
-            <form th:action="@{/mvc/products/create}" th:object="${products}" method="post">
+            <form th:action="@{/mvc/products/create}" th:object="${products}" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Naziv <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" placeholder="npr. Shimano Catana 270cm"/>
@@ -29,10 +29,21 @@
                         <div class="invalid-feedback" th:errors="*{price}"></div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="form-label fw-semibold">Kategorija ID <span class="text-danger">*</span></label>
-                        <input type="number" min="1" class="form-control" th:field="*{categoryId}" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'"/>
+                        <label class="form-label fw-semibold">Kategorija <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{categoryId}" th:classappend="${#fields.hasErrors('categoryId')} ? 'is-invalid'">
+                            <option value="">-- Odaberi --</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.id}"
+                                    th:text="${cat.name}">
+                            </option>
+                        </select>
                         <div class="invalid-feedback" th:errors="*{categoryId}"></div>
                     </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Slika proizvoda</label>
+                    <input type="file" class="form-control" name="image" accept="image/*"/>
+                    <div class="form-text">Nije obavezno. Ako ne odaberete sliku, koristit će se zadana.</div>
                 </div>
                 <div class="mb-4 form-check">
                     <input type="checkbox" class="form-check-input" th:field="*{onStock}" id="onStock"/>

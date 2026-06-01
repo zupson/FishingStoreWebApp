@@ -1,4 +1,4 @@
-package hr.algebra.fishingstore.dal.services;
+package hr.algebra.fishingstore.dal.services.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -37,7 +37,7 @@ public class JwtService {
 
     private Algorithm algorithm;
 
-    @PostConstruct //poziva se nakon što spring injektira sve vrijednosti
+    @PostConstruct
     public void init() {
         algorithm = Algorithm.HMAC256(secret);
     }
