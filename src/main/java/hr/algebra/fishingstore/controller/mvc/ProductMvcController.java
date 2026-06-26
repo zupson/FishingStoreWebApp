@@ -3,6 +3,7 @@ package hr.algebra.fishingstore.controller.mvc;
 import hr.algebra.fishingstore.dal.dto.ProductDto;
 import hr.algebra.fishingstore.dal.services.CategoryService;
 import hr.algebra.fishingstore.dal.services.ProductService;
+import hr.algebra.fishingstore.dal.services.storage.CloudinaryStorageService;
 import hr.algebra.fishingstore.utilities.PathConst;
 import hr.algebra.fishingstore.utilities.ViewPathConst;
 import jakarta.validation.Valid;
@@ -19,14 +20,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProductMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.PRODUCTS;
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
+    private static final String REDIRECT_CATEGORY = PathConst.REDIRECT_KEYWORD + BASE_URL + PathConst.CATEGORIES + "/";
+
 
     private static final String MODEL_KEY = "products";
     private static final String MODEL_KEY_CATEGORIES = "categories";
     private static final String CATEGORY_ID = "categoryId";
     private static final String IMAGE = "image";
+    public static final String IMAGE_URL = "imageUrl";
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     @GetMapping
     public String getAll(Model model) {
@@ -38,8 +43,10 @@ public class ProductMvcController {
     public String getById(@PathVariable Long id,
                           @RequestParam(required = false) Long categoryId,
                           Model model) {
-        model.addAttribute(MODEL_KEY, productService.getById(id));
+        ProductDto.ResponseDto product = productService.getById(id);
+        model.addAttribute(MODEL_KEY, product);
         model.addAttribute(CATEGORY_ID, categoryId);
+        model.addAttribute(IMAGE_URL, cloudinaryStorageService.getImageUrl(product.getImagePath()));
         return ViewPathConst.PRODUCTS_DETAILS;
     }
 
@@ -69,7 +76,7 @@ public class ProductMvcController {
             return ViewPathConst.PRODUCTS_FORM_CREATE;
 
         productService.create(createDto, image);
-        return REDIRECT_LIST;
+        return REDIRECT_CATEGORY + createDto.getCategoryId();
     }
 
     @GetMapping(PathConst.EDIT + PathConst.ID)
@@ -94,12 +101,16 @@ public class ProductMvcController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute(MODEL_KEY) ProductDto.EditDto editDto,
                          BindingResult bindingResult,
-                         @RequestParam(value = IMAGE, required = false) MultipartFile image) {
-        if (bindingResult.hasErrors())
+                         @RequestParam(value = IMAGE, required = false) MultipartFile image,
+                         Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute(MODEL_KEY_CATEGORIES, categoryService.getAll());
+            model.addAttribute(CATEGORY_ID, id);
             return ViewPathConst.PRODUCTS_FORM_UPDATE;
+        }
 
         productService.update(id, editDto, image);
-        return REDIRECT_LIST;
+        return REDIRECT_CATEGORY + editDto.getCategoryId();
     }
 
     @PostMapping(PathConst.DELETE + PathConst.ID)

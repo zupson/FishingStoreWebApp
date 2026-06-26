@@ -3,7 +3,10 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/base}" lang="hr">
-<head><title>Detalji proizvoda</title></head>
+
+<head>
+    <title>Detalji proizvoda</title>
+</head>
 <body>
 <div layout:fragment="content" th:object="${products}">
 
@@ -14,7 +17,7 @@
     </div>
 
     <div class="card shadow-sm mx-auto" style="max-width: 640px;">
-        <img th:src="@{/{path}(path=*{imagePath})}"
+        <img th:src="${imageUrl}"
              class="card-img-top"
              style="max-height: 300px; object-fit: contain;"
              alt="Slika proizvoda"/>

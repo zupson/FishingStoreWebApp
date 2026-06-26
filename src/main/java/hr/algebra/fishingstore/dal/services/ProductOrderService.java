@@ -33,6 +33,14 @@ public class ProductOrderService {
         return modelMapper.map(productOrder, ProductOrderDto.ResponseDto.class);
     }
 
+    public List<ProductOrderDto.ResponseDto> getByOrderId(Long orderId){
+        return productOrderRepository.findByOrderId(orderId)
+                .stream()
+                .map(po->modelMapper.map(po, ProductOrderDto.ResponseDto.class))
+                .toList();
+    }
+
+
     public List<ProductOrderDto.ResponseDto> getAll() {
         return productOrderRepository.findAll()
                 .stream()

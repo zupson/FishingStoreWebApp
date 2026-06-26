@@ -44,4 +44,10 @@ public class AuthController {
     public ResponseEntity<Boolean> changePassword(@Valid @RequestBody UserDto.ChangePasswordDto changePasswordDto) {
         return ResponseEntity.ok(authService.changePassword(changePasswordDto));
     }
+
+    @PostMapping(PathConst.REFRESH)
+    @PermitAll
+    public ResponseEntity<UserDto.AuthResponseDto> refresh(@RequestBody UserDto.RefreshDto refreshDto) {
+        return ResponseEntity.ok(authService.refresh(refreshDto.getRefreshToken()));
+    }
 }

@@ -42,5 +42,6 @@ public class ProductOrderDto {
         private BigDecimal priceAtPurchase;
         private Long orderId;
         private Long productId;
+        private ProductDto.ResponseDto product;
     }
 }

@@ -111,8 +111,16 @@ public class UserDto {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public class LogoutDto {
+    public static class LogoutDto {
         @NotBlank(message = "Refresh token can not be empty")
+        private String refreshToken;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RefreshDto {
+        @NotBlank
         private String refreshToken;
     }
 }

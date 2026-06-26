@@ -12,24 +12,32 @@
             <form th:action="@{/mvc/addresses/create}" th:object="${addresses}" method="post">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Ulica <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{street}" th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'" placeholder="npr. Ilica 10"/>
+                    <input type="text" class="form-control"
+                           th:field="*{street}"
+                           th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'" placeholder="npr. Ilica 10"/>
                     <div class="invalid-feedback" th:errors="*{street}"></div>
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm-6">
                         <label class="form-label fw-semibold">Grad <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" th:field="*{city}" th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'" placeholder="Zagreb"/>
+                        <input type="text" class="form-control"
+                               th:field="*{city}"
+                               th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'" placeholder="Zagreb"/>
                         <div class="invalid-feedback" th:errors="*{city}"></div>
                     </div>
                     <div class="col-sm-6">
                         <label class="form-label fw-semibold">Poštanski broj <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" th:field="*{postalCode}" th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'" placeholder="10000"/>
+                        <input type="number" class="form-control"
+                               th:field="*{postalCode}"
+                               th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'" placeholder="10000"/>
                         <div class="invalid-feedback" th:errors="*{postalCode}"></div>
                     </div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Država <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{country}" th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'" placeholder="Hrvatska"/>
+                    <input type="text" class="form-control"
+                           th:field="*{country}"
+                           th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'" placeholder="Hrvatska"/>
                     <div class="invalid-feedback" th:errors="*{country}"></div>
                 </div>
                 <div class="d-flex gap-2">

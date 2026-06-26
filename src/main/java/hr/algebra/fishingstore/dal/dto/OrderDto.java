@@ -42,5 +42,7 @@ public class OrderDto {
         private Long addressId;
         private Long userId;
         private String approvalUrl;
+        private AddressDto.ResponseDto address;
+        private UserDto.ResponseDto user;
     }
 }

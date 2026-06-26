@@ -3,8 +3,10 @@ package hr.algebra.fishingstore.controller.mvc;
 import hr.algebra.fishingstore.dal.dto.UserDto;
 import hr.algebra.fishingstore.dal.services.AuthService;
 import hr.algebra.fishingstore.model.enums.Role;
+import hr.algebra.fishingstore.session.RedirectSession;
 import hr.algebra.fishingstore.utilities.PathConst;
 import hr.algebra.fishingstore.utilities.ViewPathConst;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +24,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.AUTH;
     private static final String REDIRECT_LOGIN = PathConst.REDIRECT_KEYWORD + BASE_URL;
-    private static final String REDIRECT_PAYMENT = PathConst.REDIRECT_KEYWORD + BASE_URL;
+    private static final String REDIRECT_CATEGORIES = PathConst.REDIRECT_KEYWORD + PathConst.MVC +PathConst.CATEGORIES;
 
     public static final String MODEL_KEY_LOGIN = "loginDto";
     public static final String MODEL_KEY_REGISTER = "registerDto";
     private static final String HIDE_BUTTON = "hideButton";
 
     private final AuthService authService;
+    private final RedirectSession redirectSession;
 
     @GetMapping(PathConst.LOGIN)
-    public String loginPage(Model model) {
+    public String loginPage(Model model, HttpServletRequest request) {
+        redirectSession.save(request);
         model.addAttribute(MODEL_KEY_LOGIN, new UserDto.LoginDto());
         model.addAttribute(HIDE_BUTTON, true);
         return ViewPathConst.AUTH_LOGIN_VIEW;
@@ -46,14 +50,15 @@ public class AuthMvcController {
 
     @PostMapping(PathConst.REGISTER)
     public String register(@Valid @ModelAttribute UserDto.RegisterDto registerDto,
-                           BindingResult result) {
+                           BindingResult result, HttpServletRequest request) {
         if (result.hasErrors())
             return ViewPathConst.AUTH_REGISTER_VIEW;
 
         authService.register(registerDto, Role.USER);
+        authService.autoLogin(request, registerDto.getUsername(), registerDto.getPassword());
 
-        //TODO: dodaj da redirekta na plaćanje proizvoda u košarici
-        return REDIRECT_PAYMENT;
+        String redirect = redirectSession.getAndClear();
+        return redirect != null ? PathConst.REDIRECT_KEYWORD + redirect : REDIRECT_CATEGORIES;
     }
 
     @PostMapping(PathConst.LOGOUT)

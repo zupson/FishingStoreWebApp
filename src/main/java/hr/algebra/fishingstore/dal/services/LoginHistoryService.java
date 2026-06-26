@@ -6,10 +6,9 @@ import hr.algebra.fishingstore.dal.repos.UserRepository;
 import hr.algebra.fishingstore.model.entities.LoginHistory;
 import hr.algebra.fishingstore.model.entities.User;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class LoginHistoryService {
     }
 
     public List<LoginHistoryDto.ResponseDto> getAll() {
-        return loginHistoryRepository.findAll()
+        return loginHistoryRepository.findAllByOrderByLoginAtDesc()
                 .stream()
                 .map(lh -> {
                     LoginHistoryDto.ResponseDto dto = modelMapper.map(lh, LoginHistoryDto.ResponseDto.class);
@@ -44,17 +43,17 @@ public class LoginHistoryService {
                 .toList();
     }
 
-    public LoginHistoryDto.ResponseDto create(HttpServletRequest request) {
-        String currentLoggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User user = userRepository.findByUsername(currentLoggedInUsername)
+    @Async
+    public void create(String ipAddress, String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
 
         LoginHistory loginHistory = new LoginHistory();
-        loginHistory.setIpAddress(request.getRemoteAddr());
+        loginHistory.setIpAddress(ipAddress);
         loginHistory.setSuccess(true);
         loginHistory.setUser(user);
 
-        return modelMapper.map(loginHistoryRepository.save(loginHistory), LoginHistoryDto.ResponseDto.class);
+        loginHistoryRepository.save(loginHistory);
     }
 }

@@ -2,6 +2,8 @@ package hr.algebra.fishingstore.utilities;
 
 public final class PathConst {
 
+    public static final String SEARCH = "/search";
+
     private PathConst() {}
 
     public static final String ALL = "/**";

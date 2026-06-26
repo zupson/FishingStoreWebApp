@@ -3,14 +3,19 @@ package hr.algebra.fishingstore.controller.mvc;
 import hr.algebra.fishingstore.dal.dto.OrderDto;
 import hr.algebra.fishingstore.dal.services.AddressService;
 import hr.algebra.fishingstore.dal.services.OrderService;
+import hr.algebra.fishingstore.dal.services.ProductOrderService;
 import hr.algebra.fishingstore.utilities.PathConst;
 import hr.algebra.fishingstore.utilities.ViewPathConst;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping(OrderMvcController.BASE_URL)
@@ -19,13 +24,18 @@ public class OrderMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.ORDERS;
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
     private static final String MODEL_KEY = "orders";
+    public static final String PRODUCT_ORDERS_MODEL = "productOrders";
+
     private static final String ORDER_ID = "orderId";
     private static final String PAY_PAL_SUCCESS = "/paypal/success";
     private static final String PAY_PAL_CANCEL = "/paypal/cancel";
     private static final String SLASH = "/";
+    public static final String BACK_URL = "backUrl";
+    public static final String REFERER = "Referer";
 
     private final OrderService orderService;
     private final AddressService addressService;
+    private final ProductOrderService productOrderService;
 
     @GetMapping
     public String getAll(Model model) {
@@ -34,9 +44,24 @@ public class OrderMvcController {
     }
 
     @GetMapping(PathConst.ID)
-    public String getById(@PathVariable Long id, Model model) {
+    public String getById(@PathVariable Long id, Model model, HttpServletRequest request) {
         model.addAttribute(MODEL_KEY, orderService.getById(id));
+        model.addAttribute(PRODUCT_ORDERS_MODEL, productOrderService.getByOrderId(id));
+        model.addAttribute(BACK_URL, request.getHeader(REFERER));
         return ViewPathConst.ORDERS_DETAILS_VIEW;
+    }
+
+    @GetMapping(PathConst.SEARCH)
+    public String search(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            Model model) {
+        model.addAttribute(MODEL_KEY, orderService.getByFilter(
+                username,
+                from != null ? from.atStartOfDay() : null,
+                to != null ? to.atTime(23, 59, 59) : null));
+        return ViewPathConst.ORDERS_LIST_VIEW;
     }
 
     @GetMapping(PathConst.NEW)

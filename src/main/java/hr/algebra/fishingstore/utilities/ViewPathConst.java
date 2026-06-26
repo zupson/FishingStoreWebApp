@@ -1,6 +1,7 @@
 package hr.algebra.fishingstore.utilities;
 
 public class ViewPathConst {
+
     private ViewPathConst() {
     }
 
@@ -18,6 +19,7 @@ public class ViewPathConst {
 
     private static final String ADDRESSES = "addresses";
     public static final String ADDRESSES_LIST = ADDRESSES + PathConst.LIST;
+    public static final String ADDRESSES_DETAILS = ADDRESSES + PathConst.DETAILS;;
     public static final String ADDRESSES_FORM_CREATE = ADDRESSES + PathConst.FORM_CREATE;
 
     private static final String AUTH = "auth";
@@ -30,7 +32,7 @@ public class ViewPathConst {
 
     private static final String LOGIN_HISTORIES = "login-histories";
     public static final String LOGIN_HISTORY_LIST_VIEW = LOGIN_HISTORIES + PathConst.LIST;
-    public static final String LOGIN_HISTORY_DETAILS_VIEW = LOGIN_HISTORIES + PathConst.DETAILS;
+
 
     private static final String ORDERS = "orders";
     public static final String ORDERS_LIST_VIEW = ORDERS + PathConst.LIST;

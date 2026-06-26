@@ -24,10 +24,4 @@ public class LoginHistoryMvcController {
         model.addAttribute(MODEL_KEY, loginHistoryService.getAll());
         return ViewPathConst.LOGIN_HISTORY_LIST_VIEW;
     }
-
-    @GetMapping(PathConst.ID)
-    public String getById(@PathVariable Long id, Model model) {
-        model.addAttribute(MODEL_KEY, loginHistoryService.getById(id));
-        return  ViewPathConst.LOGIN_HISTORY_DETAILS_VIEW;
-    }
 }

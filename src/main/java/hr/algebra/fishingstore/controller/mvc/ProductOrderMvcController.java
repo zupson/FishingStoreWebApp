@@ -19,7 +19,7 @@ public class ProductOrderMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.PRODUCT_ORDERS;
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
 
-    private static final String MODEL_KEY = "product-orders";
+    private static final String MODEL_KEY = "productOrders";
 
     private final ProductOrderService productOrderService;
 
@@ -33,6 +33,12 @@ public class ProductOrderMvcController {
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, productOrderService.getById(id));
         return ViewPathConst.PRODUCT_ORDERS_DETAILS_VIEW;
+    }
+
+    @GetMapping(PathConst.ORDERS + PathConst.ID)
+    public String getByOrderId(@PathVariable Long id, Model model) {
+        model.addAttribute(MODEL_KEY, productOrderService.getByOrderId(id));
+        return ViewPathConst.PRODUCT_ORDERS_LIST_VIEW;
     }
 
     @GetMapping(PathConst.NEW)

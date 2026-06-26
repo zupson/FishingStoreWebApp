@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -52,9 +53,10 @@ public class SecurityConfig {
                         session ->
                                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathConst.API + PathConst.USERS + PathConst.LOGIN).permitAll()
-                        .requestMatchers(PathConst.API + PathConst.USERS + PathConst.REGISTER).permitAll()
-                        .requestMatchers(PathConst.API + PathConst.USERS + PathConst.REFRESH).permitAll()
+                        .requestMatchers(PathConst.API + PathConst.AUTH + PathConst.LOGIN).permitAll()
+                        .requestMatchers(PathConst.API + PathConst.AUTH + PathConst.REGISTER).permitAll()
+                        .requestMatchers(PathConst.API + PathConst.AUTH + PathConst.REFRESH).permitAll()
+                        .requestMatchers(PathConst.API + PathConst.AUTH + PathConst.LOGOUT).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -65,7 +67,7 @@ public class SecurityConfig {
     public SecurityFilterChain mvcFilterChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher(PathConst.MVC + PathConst.ALL)
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(PathConst.MVC + PathConst.PRODUCTS).permitAll()
@@ -94,9 +96,10 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage(PathConst.MVC + PathConst.AUTH + PathConst.LOGIN)
                         .loginProcessingUrl(PathConst.MVC + PathConst.AUTH + PathConst.LOGIN)
-                        .successHandler((request, response, authentication) -> {
+                        .successHandler(
+                                (request, response, authentication) -> {
 
-                            loginHistoryService.create(request);
+                            loginHistoryService.create(request.getRemoteAddr(), authentication.getName());
 
                             boolean isAdmin = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.name()));

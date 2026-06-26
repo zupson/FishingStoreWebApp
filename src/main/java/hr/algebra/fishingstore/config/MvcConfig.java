@@ -23,4 +23,3 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/images/");
     }
 }
-

@@ -30,7 +30,8 @@ public class RefreshTokenService {
 
     public boolean isValid(String token) {
         return refreshTokenRepository.findByToken(token)
-                .map(t -> !t.isRevoked() && t.getExpiresAt().isAfter(LocalDateTime.now()))
+                .map(t -> !t.isRevoked() &&
+                        t.getExpiresAt().isAfter(LocalDateTime.now()))
                 .orElse(false);
     }
 

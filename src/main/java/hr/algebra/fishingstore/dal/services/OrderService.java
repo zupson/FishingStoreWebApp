@@ -4,18 +4,17 @@ import hr.algebra.fishingstore.dal.dto.OrderDto;
 import hr.algebra.fishingstore.dal.dto.PaymentDto;
 import hr.algebra.fishingstore.dal.repos.*;
 import hr.algebra.fishingstore.dal.services.payment.PayPalService;
+import hr.algebra.fishingstore.dal.specifications.OrderSpecification;
 import hr.algebra.fishingstore.exceptions.CartEmptyException;
 import hr.algebra.fishingstore.model.entities.*;
-import hr.algebra.fishingstore.model.enums.Currency;
-import hr.algebra.fishingstore.model.enums.OrderStatus;
-import hr.algebra.fishingstore.model.enums.PaymentMethod;
-import hr.algebra.fishingstore.model.enums.PaymentStatus;
+import hr.algebra.fishingstore.model.enums.*;
 import hr.algebra.fishingstore.session.CartSession;
 import hr.algebra.fishingstore.utilities.PathConst;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,10 +59,33 @@ public class OrderService {
         return modelMapper.map(order, OrderDto.ResponseDto.class);
     }
 
-    public List<OrderDto.ResponseDto> getAll() {
-        return orderRepository.findAll()
+    public List<OrderDto.ResponseDto> getByFilter(String username, LocalDateTime from, LocalDateTime to) {
+        Specification<Order> spec = Specification
+                .where(OrderSpecification.hasUsername(username))
+                .and(OrderSpecification.createdAfter(from))
+                .and(OrderSpecification.createdBefore(to));
+
+        return orderRepository.findAll(spec)
                 .stream()
                 .map(o -> modelMapper.map(o, OrderDto.ResponseDto.class))
+                .toList();
+    }
+
+    public List<OrderDto.ResponseDto> getAll() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_" + Role.ADMIN.name()));
+
+        if (isAdmin)
+            return orderRepository.findAll()
+                    .stream()
+                    .map(o -> modelMapper.map(o, OrderDto.ResponseDto.class))
+                    .toList();
+
+        return orderRepository.findByUserUsername(username)
+                .stream()
+                .map(order -> modelMapper.map(order, OrderDto.ResponseDto.class))
                 .toList();
     }
 

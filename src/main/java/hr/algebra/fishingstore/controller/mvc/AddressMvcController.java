@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AddressMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.ADDRESSES;
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
+    private static final String REDIRECT_ORDERS_NEW = PathConst.REDIRECT_KEYWORD + PathConst.MVC + PathConst.ORDERS + PathConst.NEW;
     public static final String MODEL_KEY = "addresses";
 
     private final AddressService addressService;
@@ -30,7 +31,7 @@ public class AddressMvcController {
     @GetMapping(PathConst.ID)
     public String getById(@PathVariable Long id, Model model) {
         model.addAttribute(MODEL_KEY, addressService.getById(id));
-        return ViewPathConst.ADDRESSES_LIST;
+        return ViewPathConst.ADDRESSES_DETAILS;
     }
 
     @GetMapping(PathConst.NEW)
@@ -44,7 +45,7 @@ public class AddressMvcController {
         if (bindingResult.hasErrors())
             return ViewPathConst.ADDRESSES_FORM_CREATE;
         addressService.create(createDto);
-        return REDIRECT_LIST;
+        return REDIRECT_ORDERS_NEW;
     }
 
     @PostMapping(PathConst.DELETE + PathConst.ID)

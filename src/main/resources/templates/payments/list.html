@@ -8,7 +8,7 @@
 <div layout:fragment="content">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="mb-0"><i class="bi bi-credit-card me-2 text-primary"></i>Plaćanja</h4>
+        <h4 class="mb-0">Plaćanja</h4>
         <a th:href="@{/mvc/payments/new}" class="btn btn-primary btn-sm"> Novo plaćanje</a>
     </div>
 
@@ -16,46 +16,48 @@
         <div class="card-body p-0">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Iznos</th>
-                        <th>Metoda</th>
-                        <th>Status</th>
-                        <th>Narudžba</th>
-                        <th>Datum</th>
-                        <th class="text-end">Akcije</th>
-                    </tr>
+                <tr>
+                    <th>Iznos</th>
+                    <th>Metoda</th>
+                    <th>Status</th>
+                    <th>Narudžba</th>
+                    <th>Datum</th>
+                    <th class="text-end">Akcije</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="p : ${payments}" th:object="${p}">
-                        <td th:text="*{id}" class="text-muted small"></td>
-                        <td class="fw-semibold" th:text="*{amount} + ' ' + *{currency}"></td>
-                        <td><span class="badge bg-light text-dark border" th:text="*{paymentMethod}"></span></td>
-                        <td>
+                <tr th:each="p : ${payments}" th:object="${p}">
+                    <td class="fw-semibold" th:text="|*{amount} *{currency}|"></td>
+                    <td><span class="badge bg-light text-dark border" th:text="*{paymentMethod}"></span></td>
+                    <td>
                             <span class="badge"
                                   th:classappend="*{paymentStatus.name() == 'PAID'} ? 'bg-success' :
                                                   (*{paymentStatus.name() == 'PENDING'} ? 'bg-warning text-dark' :
                                                   (*{paymentStatus.name() == 'REFUNDED'} ? 'bg-info text-dark' : 'bg-danger'))"
                                   th:text="*{paymentStatus}"></span>
-                        </td>
-                        <td><a th:href="@{/mvc/orders/{id}(id=*{orderId})}" th:text="'#' + *{orderId}" class="text-decoration-none small"></a></td>
-                        <td class="text-muted small" th:text="*{paidAt != null ? #temporals.format(paidAt,'dd.MM.yyyy') : '-'}"></td>
-                        <td class="text-end">
-                            <a th:href="@{/mvc/payments/{id}(id=*{id})}" class="btn btn-sm btn-outline-secondary me-1">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <!-- Samo admin mijenja status plaćanja -->
-                            <a sec:authorize="hasRole('ADMIN')"
-                               th:href="@{/mvc/payments/edit/{id}(id=*{id})}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(payments)}">
-                        <td colspan="7" class="text-center text-muted py-5">
-                            <i class="bi bi-credit-card fs-1 d-block mb-2"></i>Nema plaćanja.
-                        </td>
-                    </tr>
+                    </td>
+                    <td>
+                        <a th:href="@{/mvc/orders/{id}(id=*{orderId})}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-receipt"></i>
+                        </a>
+                    </td>
+                    <td class="text-muted small"
+                        th:text="${p.paidAt != null ? #temporals.format(p.paidAt,'dd.MM.yyyy') : '-'}"></td>
+                    <td class="text-end">
+                        <a th:href="@{/mvc/payments/{id}(id=*{id})}" class="btn btn-sm btn-outline-secondary me-1">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a sec:authorize="hasRole('ADMIN')"
+                           th:href="@{/mvc/payments/edit/{id}(id=*{id})}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(payments)}">
+                    <td colspan="7" class="text-center text-muted py-5">
+                        <i class="bi bi-credit-card fs-1 d-block mb-2"></i>Nema plaćanja.
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
