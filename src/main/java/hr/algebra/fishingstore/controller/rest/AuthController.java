@@ -23,31 +23,38 @@ public class AuthController {
     @PostMapping(PathConst.REGISTER)
     @PermitAll
     public ResponseEntity<UserDto.AuthResponseDto> register(@Valid @RequestBody UserDto.RegisterDto registerDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(registerDto, Role.USER));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(authService.register(registerDto, Role.USER));
     }
 
     @PostMapping(PathConst.LOGIN)
     @PermitAll
     public ResponseEntity<UserDto.AuthResponseDto> login(@Valid @RequestBody UserDto.LoginDto loginDto) {
-        return ResponseEntity.ok(authService.login(loginDto));
+        return ResponseEntity
+                .ok(authService.login(loginDto));
     }
 
     @PostMapping(PathConst.LOGOUT)
     @PreAuthorize((RoleBasedAccessConst.AUTHENTICATED))
     public ResponseEntity<Void> logout(@Valid @RequestBody UserDto.LogoutDto logoutDto) {
         authService.logout(logoutDto.getRefreshToken());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
     @PatchMapping(PathConst.CHANGE_PASSWORD)
     @PreAuthorize(RoleBasedAccessConst.USER_ONLY)
     public ResponseEntity<Boolean> changePassword(@Valid @RequestBody UserDto.ChangePasswordDto changePasswordDto) {
-        return ResponseEntity.ok(authService.changePassword(changePasswordDto));
+        return ResponseEntity
+                .ok(authService.changePassword(changePasswordDto));
     }
 
     @PostMapping(PathConst.REFRESH)
     @PermitAll
     public ResponseEntity<UserDto.AuthResponseDto> refresh(@RequestBody UserDto.RefreshDto refreshDto) {
-        return ResponseEntity.ok(authService.refresh(refreshDto.getRefreshToken()));
+        return ResponseEntity
+                .ok(authService.refresh(refreshDto.getRefreshToken()));
     }
 }

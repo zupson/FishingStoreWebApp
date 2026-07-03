@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 public class CartDto {
+    private CartDto(){}
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

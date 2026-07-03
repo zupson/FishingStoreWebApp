@@ -13,9 +13,9 @@
         <div class="card-body">
             <form th:action="@{/mvc/orders/update/{id}(id=${orderId})}" th:object="${orders}" method="post">
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">Status narudžbe <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold" for="orderStatus">Status narudžbe <span class="text-danger">*</span></label>
                     <label>
-                        <select class="form-select" th:field="*{orderStatus}" th:classappend="${#fields.hasErrors('orderStatus')} ? 'is-invalid'">
+                        <select class="form-select" id="orderStatus" th:field="*{orderStatus}" th:classappend="${#fields.hasErrors('orderStatus')} ? 'is-invalid'">
                             <option value="">-- Odaberi status --</option>
                             <option value="PENDING">PENDING</option>
                             <option value="CONFIRMED">CONFIRMED</option>

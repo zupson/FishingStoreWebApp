@@ -33,10 +33,6 @@ public class CartSession implements Serializable {
         cartItems.clear();
     }
 
-    public int getTotalItems() {
-        return cartItems.values().stream().mapToInt(Integer::intValue).sum();
-    }
-
     public boolean isEmpty() {
         return cartItems.isEmpty();
     }

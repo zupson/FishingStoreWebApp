@@ -24,6 +24,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private static final String BEARER = "Bearer ";
     public static final String USE_ACCESS_TOKEN = "Use access token";
     public static final String TOKEN_IS_NOT_VALID = "Token is not valid";
+    public static final String ROLE = "ROLE_";
 
     private final JwtService jwtService;
 
@@ -64,7 +65,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String role = jwtService.extractRole(jwt);
         Long userId = jwtService.extractUserId(jwt);
 
-        List<SimpleGrantedAuthority> simpleGrantedAuthorities = List.of(new SimpleGrantedAuthority(role));
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = List.of(new SimpleGrantedAuthority(ROLE +role));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 userId, null, simpleGrantedAuthorities);

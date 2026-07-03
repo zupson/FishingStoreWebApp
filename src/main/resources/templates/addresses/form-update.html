@@ -11,26 +11,26 @@
         <div class="card-body">
             <form th:action="@{/mvc/addresses/edit/{id}(id=${addressId})}" th:object="${addresses}" method="post">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Ulica <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{street}" th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'"/>
-                    <div class="invalid-feedback" th:errors="*{street}"></div>
+                    <label class="form-label fw-semibold" for="street">Ulica <span class="text-danger">*</span></label>
+                    <input type="text" id="street" class="form-control" th:field="${street}" th:classappend="${#fields.hasErrors('street')} ? 'is-invalid'"/>
+                    <div class="invalid-feedback" th:errors="${street}"></div>
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm-6">
-                        <label class="form-label fw-semibold">Grad <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" th:field="*{city}" th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'"/>
-                        <div class="invalid-feedback" th:errors="*{city}"></div>
+                        <label class="form-label fw-semibold" for="city">Grad <span class="text-danger">*</span></label>
+                        <input type="text" id="city" class="form-control" th:field="${city}" th:classappend="${#fields.hasErrors('city')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:errors="${city}"></div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="form-label fw-semibold">Poštanski broj <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" th:field="*{postalCode}" th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'"/>
-                        <div class="invalid-feedback" th:errors="*{postalCode}"></div>
+                        <label class="form-label fw-semibold" for="postalCode">Poštanski broj <span class="text-danger">*</span></label>
+                        <input type="number" id="postalCode" class="form-control" th:field="${postalCode}" th:classappend="${#fields.hasErrors('postalCode')} ? 'is-invalid'"/>
+                        <div class="invalid-feedback" th:errors="${postalCode}"></div>
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">Država <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{country}" th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'"/>
-                    <div class="invalid-feedback" th:errors="*{country}"></div>
+                    <label class="form-label fw-semibold" for="country">Država <span class="text-danger">*</span></label>
+                    <input type="text" id="country" class="form-control" th:field="${country}" th:classappend="${#fields.hasErrors('country')} ? 'is-invalid'"/>
+                    <div class="invalid-feedback" th:errors="${country}"></div>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Spremi izmjene</button>

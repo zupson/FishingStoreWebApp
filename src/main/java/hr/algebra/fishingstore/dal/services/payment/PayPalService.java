@@ -3,6 +3,7 @@ package hr.algebra.fishingstore.dal.services.payment;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.algebra.fishingstore.config.PayPalConfig;
+import hr.algebra.fishingstore.exceptions.PayPalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,6 @@ public class PayPalService {
     private static final String APPROVE = "approve";
     private static final String REL = "rel";
     private static final String HREF = "href";
-    private static final String URL_NOT_FOUND = "PayPal approval URL not found";
     private static final String EMPTY_BODY = "{}";
     private static final String CAPTURE = "/capture";
     private static final String COMPLETED = "COMPLETED";
@@ -36,6 +36,8 @@ public class PayPalService {
     private static final String BASIC = "Basic ";
     private static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "grant_type=client_credentials";
+
+    private static final String URL_NOT_FOUND = "PayPal approval URL not found";
 
     private final PayPalConfig payPalConfig;
     private final ObjectMapper objectMapper;
@@ -58,7 +60,7 @@ public class PayPalService {
             if (APPROVE.equals(link.get(REL).asText()))
                 return link.get(HREF).asText();
         }
-        throw new RuntimeException(URL_NOT_FOUND);
+        throw new PayPalException(URL_NOT_FOUND);
     }
 
     private HttpRequest buildCreateOrderRequest(String accessToken, String body) {

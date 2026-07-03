@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.AUTH;
     private static final String REDIRECT_LOGIN = PathConst.REDIRECT_KEYWORD + BASE_URL;
-    private static final String REDIRECT_CATEGORIES = PathConst.REDIRECT_KEYWORD + PathConst.MVC +PathConst.CATEGORIES;
+    private static final String REDIRECT_CATEGORIES = PathConst.REDIRECT_KEYWORD + PathConst.MVC
+            + PathConst.CATEGORIES;
 
     public static final String MODEL_KEY_LOGIN = "loginDto";
     public static final String MODEL_KEY_REGISTER = "registerDto";
@@ -55,10 +56,14 @@ public class AuthMvcController {
             return ViewPathConst.AUTH_REGISTER_VIEW;
 
         authService.register(registerDto, Role.USER);
-        authService.autoLogin(request, registerDto.getUsername(), registerDto.getPassword());
+        authService.autoLogin(request,
+                registerDto.getUsername(),
+                registerDto.getPassword());
 
         String redirect = redirectSession.getAndClear();
-        return redirect != null ? PathConst.REDIRECT_KEYWORD + redirect : REDIRECT_CATEGORIES;
+        return redirect != null
+                ? PathConst.REDIRECT_KEYWORD + redirect
+                : REDIRECT_CATEGORIES;
     }
 
     @PostMapping(PathConst.LOGOUT)

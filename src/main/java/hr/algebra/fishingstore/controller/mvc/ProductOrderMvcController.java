@@ -30,13 +30,15 @@ public class ProductOrderMvcController {
     }
 
     @GetMapping(PathConst.ID)
-    public String getById(@PathVariable Long id, Model model) {
+    public String getById(@PathVariable Long id,
+                          Model model) {
         model.addAttribute(MODEL_KEY, productOrderService.getById(id));
         return ViewPathConst.PRODUCT_ORDERS_DETAILS_VIEW;
     }
 
     @GetMapping(PathConst.ORDERS + PathConst.ID)
-    public String getByOrderId(@PathVariable Long id, Model model) {
+    public String getByOrderId(@PathVariable Long id,
+                               Model model) {
         model.addAttribute(MODEL_KEY, productOrderService.getByOrderId(id));
         return ViewPathConst.PRODUCT_ORDERS_LIST_VIEW;
     }
@@ -59,7 +61,8 @@ public class ProductOrderMvcController {
     }
 
     @GetMapping(PathConst.EDIT + PathConst.ID)
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model) {
         ProductOrderDto.ResponseDto productOrder = productOrderService.getById(id);
 
         ProductOrderDto.EditDto editDto = new ProductOrderDto.EditDto();

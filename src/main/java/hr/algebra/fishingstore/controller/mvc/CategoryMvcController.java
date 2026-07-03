@@ -42,11 +42,11 @@ public class CategoryMvcController {
     }
 
     @PostMapping(PathConst.CREATE)
-    public String create(@Valid @ModelAttribute(MODEL_KEY) CategoryDto.CreateDto createDto, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
+    public String create(@Valid @ModelAttribute(MODEL_KEY) CategoryDto.CreateDto createDto,
+                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
             return ViewPathConst.CATEGORIES_FORM_CREATE;
-        }
+
         categoryService.create(createDto);
         return REDIRECT_LIST;
     }
@@ -67,9 +67,9 @@ public class CategoryMvcController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute(MODEL_KEY) CategoryDto.EditDto editDto,
                          BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors())
             return ViewPathConst.CATEGORIES_FORM_UPDATE;
-        }
+
         categoryService.update(id, editDto);
         return REDIRECT_LIST;
     }

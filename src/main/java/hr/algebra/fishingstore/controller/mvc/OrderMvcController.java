@@ -3,6 +3,7 @@ package hr.algebra.fishingstore.controller.mvc;
 import hr.algebra.fishingstore.dal.dto.OrderDto;
 import hr.algebra.fishingstore.dal.services.AddressService;
 import hr.algebra.fishingstore.dal.services.OrderService;
+import hr.algebra.fishingstore.dal.services.PayPalOrderService;
 import hr.algebra.fishingstore.dal.services.ProductOrderService;
 import hr.algebra.fishingstore.utilities.PathConst;
 import hr.algebra.fishingstore.utilities.ViewPathConst;
@@ -34,6 +35,7 @@ public class OrderMvcController {
     public static final String REFERER = "Referer";
 
     private final OrderService orderService;
+    private final PayPalOrderService payPalOrderService;
     private final AddressService addressService;
     private final ProductOrderService productOrderService;
 
@@ -44,7 +46,9 @@ public class OrderMvcController {
     }
 
     @GetMapping(PathConst.ID)
-    public String getById(@PathVariable Long id, Model model, HttpServletRequest request) {
+    public String getById(@PathVariable Long id,
+                          Model model,
+                          HttpServletRequest request) {
         model.addAttribute(MODEL_KEY, orderService.getById(id));
         model.addAttribute(PRODUCT_ORDERS_MODEL, productOrderService.getByOrderId(id));
         model.addAttribute(BACK_URL, request.getHeader(REFERER));
@@ -70,6 +74,7 @@ public class OrderMvcController {
         model.addAttribute(AddressMvcController.MODEL_KEY, addressService.getAll());
         return ViewPathConst.ORDERS_FORM_CREATE_VIEW;
     }
+
     @PostMapping(PathConst.CREATE)
     public String create(@Valid @ModelAttribute(MODEL_KEY) OrderDto.CreateDto createDto,
                          BindingResult bindingResult) {
@@ -86,8 +91,9 @@ public class OrderMvcController {
     }
 
     @GetMapping(PAY_PAL_SUCCESS)
-    public String paypalSuccess(@RequestParam String token, @RequestParam Long orderId) {
-        orderService.confirmPayPalPayment(token, orderId);
+    public String paypalSuccess(@RequestParam String token,
+                                @RequestParam Long orderId) {
+        payPalOrderService.confirmPayPalPayment(token, orderId);
         return PathConst.REDIRECT_KEYWORD + BASE_URL + SLASH + orderId;
     }
 
@@ -98,7 +104,8 @@ public class OrderMvcController {
     }
 
     @GetMapping(PathConst.EDIT + PathConst.ID)
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model) {
         OrderDto.ResponseDto order = orderService.getById(id);
 
         OrderDto.EditDto editDto = new OrderDto.EditDto();

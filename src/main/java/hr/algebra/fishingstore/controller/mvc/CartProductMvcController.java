@@ -25,7 +25,6 @@ public class CartProductMvcController {
     private static final String DEFAULT_QUANTITY = "1";
     private static final String TOTAL = "total";
 
-
     private final CartSession cartSession;
     private final ProductService productService;
 
@@ -40,7 +39,10 @@ public class CartProductMvcController {
         Map<ProductDto.ResponseDto, Integer> cartProducts = getCartProducts();
 
         return cartProducts.entrySet().stream()
-                .map(e -> e.getKey().getPrice().multiply(BigDecimal.valueOf(e.getValue())))
+                .map(e ->
+                        e.getKey()
+                        .getPrice()
+                        .multiply(BigDecimal.valueOf(e.getValue())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

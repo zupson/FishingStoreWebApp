@@ -22,12 +22,13 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Ime</label>
+                                <label class="form-label fw-semibold" for="firstName">Ime</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
                                         <i class="bi bi-person text-muted"></i>
                                     </span>
                                     <input type="text"
+                                           id="firstName"
                                            th:field="*{firstName}"
                                            class="form-control border-start-0"
                                            th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid'"
@@ -36,12 +37,13 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Prezime</label>
+                                <label class="form-label fw-semibold" for="lastName">Prezime</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
                                         <i class="bi bi-person text-muted"></i>
                                     </span>
                                     <input type="text"
+                                           id="lastName"
                                            th:field="*{lastName}"
                                            class="form-control border-start-0"
                                            th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid'"
@@ -52,13 +54,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Email</label>
+                            <label class="form-label fw-semibold" for="email">Email</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-envelope text-muted"></i>
                                 </span>
                                 <input type="email"
                                        th:field="*{email}"
+                                       id="email"
                                        class="form-control border-start-0"
                                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
                                        placeholder="email@primjer.com"/>
@@ -67,13 +70,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Korisničko ime</label>
+                            <label class="form-label fw-semibold" for="username">Korisničko ime</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-at text-muted"></i>
                                 </span>
                                 <input type="text"
                                        th:field="*{username}"
+                                       id="username"
                                        class="form-control border-start-0"
                                        th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
                                        placeholder="Korisničko ime"/>
@@ -82,12 +86,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Lozinka</label>
+                            <label class="form-label fw-semibold" for="password">Lozinka</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-lock text-muted"></i>
                                 </span>
                                 <input type="password"
+                                       id="password"
                                        th:field="*{password}"
                                        class="form-control border-start-0"
                                        th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"

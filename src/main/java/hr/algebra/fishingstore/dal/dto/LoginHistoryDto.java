@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 public class LoginHistoryDto {
+    private LoginHistoryDto(){}
 
     @Data
     @NoArgsConstructor

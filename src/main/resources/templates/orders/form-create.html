@@ -15,9 +15,9 @@
                 košarice.</p>
             <form th:action="@{/mvc/orders/create}" th:object="${orders}" method="post">
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">Adresa dostave <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold" for="addressId">Adresa dostave <span class="text-danger">*</span></label>
                     <label>
-                        <select class="form-select" th:field="*{addressId}"
+                        <select class="form-select" id="addressId" th:field="*{addressId}"
                                 th:classappend="${#fields.hasErrors('addressId')} ? 'is-invalid'">
                             <option value="">-- Odaberi adresu --</option>
                             <option th:each="address : ${addresses}"
@@ -29,7 +29,7 @@
                     <div class="form-text"><a th:href="@{/mvc/addresses/new}">Dodaj novu adresu</a></div>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">Način plaćanja <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold" for="cod">Način plaćanja <span class="text-danger">*</span></label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" th:field="*{paymentMethod}"
                                value="CASH_ON_DELIVERY" id="cod">

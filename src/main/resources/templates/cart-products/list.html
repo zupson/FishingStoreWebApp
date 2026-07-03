@@ -31,6 +31,7 @@
                     <td>
                         <form th:action="@{/mvc/cart-products/update/{id}(id=${entry.key.id})}" method="post">
                             <input type="number" name="quantity" min="1" th:value="${entry.value}"
+                                   aria-label="Količina"
                                    class="form-control form-control-sm" style="width:70px"
                                    onchange="this.form.submit()"/>
                         </form>

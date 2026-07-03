@@ -25,26 +25,31 @@ public class CategoryController {
     @GetMapping
     @PermitAll
     public ResponseEntity<List<CategoryDto.ResponseDto>> getAll() {
-        return ResponseEntity.ok(categoryService.getAll());
+        return ResponseEntity
+                .ok(categoryService.getAll());
     }
 
     @GetMapping(PathConst.ID)
     @PermitAll
     public ResponseEntity<CategoryDto.ResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.getById(id));
+        return ResponseEntity
+                .ok(categoryService.getById(id));
     }
 
     @PostMapping()
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
     public ResponseEntity<CategoryDto.ResponseDto> create(@Valid @RequestBody CategoryDto.CreateDto createDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(createDto));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(categoryService.create(createDto));
     }
 
     @PutMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
     public ResponseEntity<CategoryDto.ResponseDto> update(@PathVariable Long id,
                                                           @Valid @RequestBody CategoryDto.EditDto editDto) {
-        return ResponseEntity.ok(categoryService.update(id, editDto));
+        return ResponseEntity
+                .ok(categoryService.update(id, editDto));
     }
 
     @DeleteMapping(PathConst.ID)
@@ -52,8 +57,12 @@ public class CategoryController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = categoryService.delete(id);
         if (!deleted)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity
+                    .notFound()
+                    .build();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

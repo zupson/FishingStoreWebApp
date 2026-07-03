@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class AddressMvcController {
     static final String BASE_URL = PathConst.MVC + PathConst.ADDRESSES;
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
-    private static final String REDIRECT_ORDERS_NEW = PathConst.REDIRECT_KEYWORD + PathConst.MVC + PathConst.ORDERS + PathConst.NEW;
+    private static final String REDIRECT_ORDERS_NEW = PathConst.REDIRECT_KEYWORD + PathConst.MVC
+            + PathConst.ORDERS + PathConst.NEW;
     public static final String MODEL_KEY = "addresses";
 
     private final AddressService addressService;
@@ -41,7 +42,8 @@ public class AddressMvcController {
     }
 
     @PostMapping(PathConst.CREATE)
-    public String create(@Valid @ModelAttribute(MODEL_KEY) AddressDto.CreateDto createDto, BindingResult bindingResult) {
+    public String create(@Valid @ModelAttribute(MODEL_KEY) AddressDto.CreateDto createDto,
+                         BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return ViewPathConst.ADDRESSES_FORM_CREATE;
         addressService.create(createDto);

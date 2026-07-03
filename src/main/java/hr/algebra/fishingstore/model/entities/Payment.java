@@ -4,9 +4,10 @@ import hr.algebra.fishingstore.model.enums.Currency;
 import hr.algebra.fishingstore.model.enums.PaymentMethod;
 import hr.algebra.fishingstore.model.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class Payment {
 
     @Column(nullable = false)
     private Currency currency;
+
     @Column(nullable = false)
     private PaymentStatus paymentStatus;
 

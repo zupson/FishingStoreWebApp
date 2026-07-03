@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 public class CartProductDto {
+    private CartProductDto(){}
 
     @Data
     @NoArgsConstructor

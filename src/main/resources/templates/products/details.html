@@ -23,18 +23,14 @@
              alt="Slika proizvoda"/>
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
-                <h5 class="fw-bold mb-0" th:text="*{name}"></h5>
+                <h5 class="fw-bold mb-0" th:text="*{name}">Naziv proizvoda</h5>
                 <span th:if="*{onStock}" class="badge bg-success">Na stanju</span>
                 <span th:unless="*{onStock}" class="badge bg-secondary">Nije dostupno</span>
             </div>
             <p class="text-muted" th:text="*{description}"></p>
-            <h4 class="text-success fw-bold" th:text="'€ ' + *{price}"></h4>
+            <h4 class="text-success fw-bold" th:text="'€ ' + *{price}">Cijena</h4>
             <hr/>
             <dl class="row mb-0 small text-muted">
-                <dt class="col-sm-4">Kategorija ID</dt>
-                <dd class="col-sm-8">
-                    <a th:href="@{/mvc/categories/{id}(id=*{categoryId})}" th:text="*{categoryId}"></a>
-                </dd>
                 <dt class="col-sm-4">Dodano</dt>
                 <dd class="col-sm-8" th:text="*{#temporals.format(createdAt,'dd.MM.yyyy')}"></dd>
             </dl>

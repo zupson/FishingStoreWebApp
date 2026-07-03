@@ -3,12 +3,15 @@ package hr.algebra.fishingstore.dal.services.init;
 import hr.algebra.fishingstore.dal.dto.UserDto;
 import hr.algebra.fishingstore.dal.repos.UserRepository;
 import hr.algebra.fishingstore.dal.services.AuthService;
+import hr.algebra.fishingstore.exceptions.DuplicateUserException;
 import hr.algebra.fishingstore.model.enums.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AdminInit implements CommandLineRunner {
@@ -30,7 +33,6 @@ public class AdminInit implements CommandLineRunner {
     @Value("${app.admin.password}")
     private String password;
 
-
     @Override
     public void run(String... args) {
         try {
@@ -43,12 +45,13 @@ public class AdminInit implements CommandLineRunner {
                                 username,
                                 password), Role.ADMIN
                 );
-                System.out.println(ADMIN_CREATED);
+
+                log.info(ADMIN_CREATED);
             } else {
-                System.out.println(ADMIN_EXIST);
+                log.info(ADMIN_EXIST);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(ERROR_MESSAGE_ADMIN);
+        } catch (DuplicateUserException | IllegalArgumentException e) {
+            throw new RuntimeException(ERROR_MESSAGE_ADMIN, e);
         }
     }
 }

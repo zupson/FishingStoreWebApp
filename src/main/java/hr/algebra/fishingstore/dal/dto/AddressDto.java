@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 public class AddressDto {
+    private AddressDto() {}
 
     @Data
     @NoArgsConstructor

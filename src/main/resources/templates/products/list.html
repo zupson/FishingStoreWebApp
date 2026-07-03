@@ -21,7 +21,7 @@
 
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="card-title fw-bold mb-0" th:text="${p.name}"></h6>
+                        <h6 class="card-title fw-bold mb-0" th:text="${p.name}">Naziv proizvoda</h6>
                         <span th:if="${p.onStock}" class="badge bg-success ms-2">Na stanju</span>
                         <span th:unless="${p.onStock}" class="badge bg-secondary ms-2">Nema</span>
                     </div>
@@ -32,11 +32,11 @@
                 <div class="card-footer bg-transparent d-flex gap-2">
                     <a th:href="@{/mvc/products/{id}(id=${p.id}, categoryId=${categoryId})}"
                        class="btn btn-sm btn-outline-secondary flex-fill">
-                        <i class="bi bi-eye me-1"></i>Detalji
+                        <i class="bi bi-eye me-1"></i>
                     </a>
                     <a th:href="@{/mvc/cart-products/new(productId=${p.id})}"
                        class="btn btn-sm btn-primary flex-fill">
-                        <i class="bi bi-cart-plus me-1"></i>Dodaj
+                        <i class="bi bi-cart-plus me-1"></i>
                     </a>
                     <div sec:authorize="hasRole('ADMIN')" class="d-flex gap-1">
                         <a th:href="@{/mvc/products/edit/{id}(id=${p.id})}"

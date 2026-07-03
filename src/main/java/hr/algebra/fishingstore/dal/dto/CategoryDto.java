@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 public class CategoryDto {
+    private CategoryDto(){}
 
     @Data
     @NoArgsConstructor

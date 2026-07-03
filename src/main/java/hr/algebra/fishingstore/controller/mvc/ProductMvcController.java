@@ -22,7 +22,6 @@ public class ProductMvcController {
     private static final String REDIRECT_LIST = PathConst.REDIRECT_KEYWORD + BASE_URL;
     private static final String REDIRECT_CATEGORY = PathConst.REDIRECT_KEYWORD + BASE_URL + PathConst.CATEGORIES + "/";
 
-
     private static final String MODEL_KEY = "products";
     private static final String MODEL_KEY_CATEGORIES = "categories";
     private static final String CATEGORY_ID = "categoryId";
@@ -51,14 +50,16 @@ public class ProductMvcController {
     }
 
     @GetMapping(PathConst.CATEGORIES + PathConst.ID)
-    public String getByCategories(@PathVariable Long id, Model model) {
+    public String getByCategories(@PathVariable Long id,
+                                  Model model) {
         model.addAttribute(MODEL_KEY, productService.getByCategoryId(id));
         model.addAttribute(CATEGORY_ID, id);
         return ViewPathConst.PRODUCTS_LIST;
     }
 
     @GetMapping(PathConst.NEW)
-    public String createForm(@RequestParam Long categoryId, Model model) {
+    public String createForm(@RequestParam Long categoryId,
+                             Model model) {
         ProductDto.CreateDto createDto = new ProductDto.CreateDto();
         createDto.setCategoryId(categoryId);
 
@@ -80,7 +81,8 @@ public class ProductMvcController {
     }
 
     @GetMapping(PathConst.EDIT + PathConst.ID)
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model) {
         ProductDto.ResponseDto product = productService.getById(id);
 
         ProductDto.EditDto editDto = new ProductDto.EditDto();

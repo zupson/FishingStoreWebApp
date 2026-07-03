@@ -13,16 +13,16 @@
         <div class="card-body">
             <form th:action="@{/mvc/payments/create}" th:object="${payments}" method="post">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Narudžba ID <span class="text-danger">*</span></label>
-                    <input type="number" min="1" class="form-control" th:field="*{orderId}"
+                    <label class="form-label fw-semibold" for="orderId">Narudžba ID <span class="text-danger">*</span></label>
+                    <input type="number" id="orderId" min="1" class="form-control" th:field="*{orderId}"
                            th:classappend="${#fields.hasErrors('orderId')} ? 'is-invalid'" placeholder="ID narudžbe"/>
                     <div class="invalid-feedback" th:errors="*{orderId}"></div>
                     <div class="form-text"><a th:href="@{/mvc/orders}">Pogledaj moje narudžbe</a></div>
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-sm-6">
-                        <label class="form-label fw-semibold">Valuta <span class="text-danger">*</span></label>
-                        <select class="form-select" th:field="*{currency}" th:classappend="${#fields.hasErrors('currency')} ? 'is-invalid'">
+                        <label class="form-label fw-semibold" for="currency">Valuta <span class="text-danger">*</span></label>
+                        <select class="form-select" id="currency" th:field="*{currency}" th:classappend="${#fields.hasErrors('currency')} ? 'is-invalid'">
                             <option value="">-- Odaberi --</option>
                             <option value="EUR">EUR</option>
                             <option value="USD">USD</option>
@@ -31,8 +31,8 @@
                         <div class="invalid-feedback" th:errors="*{currency}"></div>
                     </div>
                     <div class="col-sm-6">
-                        <label class="form-label fw-semibold">Metoda plaćanja <span class="text-danger">*</span></label>
-                        <select class="form-select" th:field="*{paymentMethod}" th:classappend="${#fields.hasErrors('paymentMethod')} ? 'is-invalid'">
+                        <label class="form-label fw-semibold" for="paymentMethod">Metoda plaćanja <span class="text-danger">*</span></label>
+                        <select class="form-select" id="paymentMethod" th:field="*{paymentMethod}" th:classappend="${#fields.hasErrors('paymentMethod')} ? 'is-invalid'">
                             <option value="">-- Odaberi --</option>
                             <option value="CREDIT_CARD">Kreditna kartica</option>
                             <option value="PAYPAL">PayPal</option>
@@ -43,8 +43,8 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label fw-semibold">PayPal Transaction ID <span class="text-muted">(opcionalno)</span></label>
-                    <input type="text" class="form-control" th:field="*{paypalTransactionId}" placeholder="npr. TXN-12345"/>
+                    <label class="form-label fw-semibold" for="paypalTransactionId">PayPal Transaction ID <span class="text-muted">(opcionalno)</span></label>
+                    <input type="text" id="paypalTransactionId" class="form-control" th:field="*{paypalTransactionId}" placeholder="npr. TXN-12345"/>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Plati</button>

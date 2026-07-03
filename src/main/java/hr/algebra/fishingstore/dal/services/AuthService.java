@@ -26,6 +26,9 @@ public class AuthService {
     public static final String USER_NOT_FOUND = "User not found.";
     public static final String EXPIRED_REFRESH_TOKEN = "Invalid or expired refresh token.";
     public static final String REFRESH_TOKEN_NOT_FOUND = "Refresh token not found.";
+    public static final String EMAIL_ALREADY_EXITS = "Email already exits.";
+    public static final String USERNAME_ALREADY_EXITS = "Username already exits.";
+    public static final String AUTO_LOGIN_FAILED = "Auto login failed";
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -37,9 +40,9 @@ public class AuthService {
 
     public UserDto.AuthResponseDto register(UserDto.RegisterDto dto, Role role) {
         if (userRepository.existsByEmail(dto.getEmail()))
-            throw new DuplicateUserException("Email već postoji.");
+            throw new DuplicateUserException(EMAIL_ALREADY_EXITS);
         if (userRepository.existsByUsername(dto.getUsername()))
-            throw new DuplicateUserException("Korisničko ime već postoji.");
+            throw new DuplicateUserException(USERNAME_ALREADY_EXITS);
 
         User user = initUser(dto, role);
 
@@ -91,7 +94,7 @@ public class AuthService {
             request.login(username, password);
             loginHistoryService.create(request.getRemoteAddr(), username);
         } catch (Exception e) {
-            throw new RuntimeException("Auto login failed", e);
+            throw new RuntimeException(AUTO_LOGIN_FAILED, e);
         }
     }
 

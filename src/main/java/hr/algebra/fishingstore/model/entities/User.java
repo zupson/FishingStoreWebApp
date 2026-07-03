@@ -3,7 +3,9 @@ package hr.algebra.fishingstore.model.entities;
 import hr.algebra.fishingstore.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +21,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User implements UserDetails{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,7 +58,7 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Cart cart;
+    private transient Cart cart;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

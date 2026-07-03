@@ -1,7 +1,9 @@
 package hr.algebra.fishingstore.model.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cart {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

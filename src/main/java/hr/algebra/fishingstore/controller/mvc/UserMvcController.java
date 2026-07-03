@@ -30,14 +30,15 @@ public class UserMvcController {
     }
 
     @GetMapping(PathConst.ID)
-    public String getById(@PathVariable Long id, Model model) {
+    public String getById(@PathVariable Long id,
+                          Model model) {
         model.addAttribute(MODEL_KEY, userService.getById(id));
         return ViewPathConst.USER_DETAILS_VIEW;
     }
 
-
     @GetMapping(PathConst.EDIT + PathConst.ID)
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model) {
         UserDto.ResponseDto user = userService.getById(id);
 
         UserDto.EditDto editDto = new UserDto.EditDto();
@@ -61,7 +62,6 @@ public class UserMvcController {
         userService.update(id, editDto);
         return REDIRECT_LIST;
     }
-
 
     @PostMapping(PathConst.DELETE + PathConst.ID)
     public String delete(@PathVariable Long id) {

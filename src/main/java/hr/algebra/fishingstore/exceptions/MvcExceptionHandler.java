@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
+@ControllerAdvice(basePackages = "hr.algebra.fishingstore.controller.mvc")
+public class MvcExceptionHandler {
 
     public static final String ERROR = "error";
     public static final String ERROR_500_VIEW = "error/500";
@@ -21,7 +21,6 @@ public class GlobalExceptionHandler {
         model.addAttribute(ERROR, e.getMessage());
         return ViewPathConst.AUTH_REGISTER_VIEW;
     }
-
 
     @ExceptionHandler(CartEmptyException.class)
     public String handleCartEmpty(CartEmptyException e, Model model) {

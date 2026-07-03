@@ -23,25 +23,31 @@ public class AddressController {
     @GetMapping
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
     public ResponseEntity<List<AddressDto.ResponseDto>> getAll() {
-        return ResponseEntity.ok(addressService.getAll());
+        return ResponseEntity
+                .ok(addressService.getAll());
     }
 
     @GetMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
     public ResponseEntity<AddressDto.ResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(addressService.getById(id));
+        return ResponseEntity
+                .ok(addressService.getById(id));
     }
 
     @PostMapping()
-    @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
+    @PreAuthorize(RoleBasedAccessConst.USER_ONLY)
     public ResponseEntity<AddressDto.ResponseDto> create(@Valid @RequestBody AddressDto.CreateDto createDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(addressService.create(createDto));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(addressService.create(createDto));
     }
 
     @PutMapping(PathConst.ID)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
-    public ResponseEntity<AddressDto.ResponseDto> update(@PathVariable Long id, @Valid @RequestBody AddressDto.EditDto editDto) {
-        return ResponseEntity.ok(addressService.update(id, editDto));
+    public ResponseEntity<AddressDto.ResponseDto> update(@PathVariable Long id,
+                                                         @Valid @RequestBody AddressDto.EditDto editDto) {
+        return ResponseEntity
+                .ok(addressService.update(id, editDto));
     }
 
     @DeleteMapping(PathConst.ID)
@@ -49,8 +55,12 @@ public class AddressController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = addressService.delete(id);
         if (!deleted)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity
+                    .notFound()
+                    .build();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

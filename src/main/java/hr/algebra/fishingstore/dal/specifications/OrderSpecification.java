@@ -1,10 +1,12 @@
 package hr.algebra.fishingstore.dal.specifications;
 
 import hr.algebra.fishingstore.model.entities.Order;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 
+@UtilityClass
 public class OrderSpecification {
 
     public static final String USER = "user";
@@ -12,17 +14,30 @@ public class OrderSpecification {
     public static final String CREATED_AT = "createdAt";
 
     public static Specification<Order> hasUsername(String username) {
-        return (orderEntity, query, criteriaBuilder) -> username == null || username.isBlank() ? null :
-                criteriaBuilder.like(criteriaBuilder.lower(orderEntity.get(USER).get(USERNAME)), "%" + username.toLowerCase() + "%");
+        return (orderEntity,
+                query,
+                criteriaBuilder) -> username == null || username.isBlank()
+                    ? null
+                    : criteriaBuilder.like(criteriaBuilder.lower(orderEntity.get(USER).get(USERNAME)), getFilterPattern(username));
+    }
+
+    private static String getFilterPattern(String username) {
+        return "%" + username.toLowerCase() + "%";
     }
 
     public static Specification<Order> createdAfter(LocalDateTime from) {
-        return (orderEntity, query, criteriaBuilder) -> from == null ? null :
-                criteriaBuilder.greaterThanOrEqualTo(orderEntity.get(CREATED_AT), from);
+        return (orderEntity,
+                query,
+                criteriaBuilder) -> from == null
+                    ? null
+                    : criteriaBuilder.greaterThanOrEqualTo(orderEntity.get(CREATED_AT), from);
     }
 
     public static Specification<Order> createdBefore(LocalDateTime to) {
-        return (orderEntity, query, criteriaBuilder) -> to == null ? null :
-                criteriaBuilder.lessThanOrEqualTo(orderEntity.get(CREATED_AT), to);
+        return (orderEntity,
+                query,
+                criteriaBuilder) -> to == null
+                    ? null
+                    : criteriaBuilder.lessThanOrEqualTo(orderEntity.get(CREATED_AT), to);
     }
 }

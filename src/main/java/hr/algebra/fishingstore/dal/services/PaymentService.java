@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class PaymentService {
         modelMapper.map(dto, payment);
 
         if (dto.getPaymentStatus() == PaymentStatus.PAID)
-            payment.setPaidAt(LocalDateTime.now());
+            payment.setPaidAt(LocalDateTime.now(Clock.systemUTC()));
 
         return modelMapper.map(paymentRepository.save(payment), PaymentDto.ResponseDto.class);
     }

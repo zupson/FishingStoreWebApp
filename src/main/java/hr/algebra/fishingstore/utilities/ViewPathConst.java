@@ -1,10 +1,9 @@
 package hr.algebra.fishingstore.utilities;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class ViewPathConst {
-
-    private ViewPathConst() {
-    }
-
     private static final String PRODUCTS = "products";
     public static final String PRODUCTS_LIST = PRODUCTS + PathConst.LIST;
     public static final String PRODUCTS_DETAILS = PRODUCTS + PathConst.DETAILS;
@@ -19,7 +18,7 @@ public class ViewPathConst {
 
     private static final String ADDRESSES = "addresses";
     public static final String ADDRESSES_LIST = ADDRESSES + PathConst.LIST;
-    public static final String ADDRESSES_DETAILS = ADDRESSES + PathConst.DETAILS;;
+    public static final String ADDRESSES_DETAILS = ADDRESSES + PathConst.DETAILS;
     public static final String ADDRESSES_FORM_CREATE = ADDRESSES + PathConst.FORM_CREATE;
 
     private static final String AUTH = "auth";

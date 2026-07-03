@@ -28,20 +28,24 @@ public class ProductController {
     @GetMapping
     @PermitAll
     public ResponseEntity<List<ProductDto.ResponseDto>> getAll() {
-        return ResponseEntity.ok(productService.getAll());
+        return ResponseEntity
+                .ok(productService.getAll());
     }
 
     @GetMapping(PathConst.ID)
     @PermitAll
     public ResponseEntity<ProductDto.ResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getById(id));
+        return ResponseEntity
+                .ok(productService.getById(id));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
     public ResponseEntity<ProductDto.ResponseDto> create(@RequestPart(PRODUCT) @Valid ProductDto.CreateDto createDto,
                                                          @RequestPart(value = IMAGE, required = true) MultipartFile image) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(createDto, image));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(productService.create(createDto, image));
     }
 
     @PutMapping(PathConst.ID)
@@ -49,7 +53,8 @@ public class ProductController {
     public ResponseEntity<ProductDto.ResponseDto> update(@PathVariable Long id,
                                                          @RequestPart(PRODUCT) @Valid ProductDto.EditDto editDto,
                                                          @RequestPart(value = IMAGE, required = false) MultipartFile image) {
-        return ResponseEntity.ok(productService.update(id, editDto, image));
+        return ResponseEntity
+                .ok(productService.update(id, editDto, image));
     }
 
     @DeleteMapping(PathConst.ID)
@@ -57,8 +62,12 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = productService.delete(id);
         if (!deleted)
-            return ResponseEntity.notFound().build();
+            return ResponseEntity
+                    .notFound()
+                    .build();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

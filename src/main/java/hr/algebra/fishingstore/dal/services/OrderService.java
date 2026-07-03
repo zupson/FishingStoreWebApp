@@ -3,29 +3,27 @@ package hr.algebra.fishingstore.dal.services;
 import hr.algebra.fishingstore.dal.dto.OrderDto;
 import hr.algebra.fishingstore.dal.dto.PaymentDto;
 import hr.algebra.fishingstore.dal.repos.*;
-import hr.algebra.fishingstore.dal.services.payment.PayPalService;
 import hr.algebra.fishingstore.dal.specifications.OrderSpecification;
 import hr.algebra.fishingstore.exceptions.CartEmptyException;
 import hr.algebra.fishingstore.model.entities.*;
-import hr.algebra.fishingstore.model.enums.*;
+import hr.algebra.fishingstore.model.enums.Currency;
+import hr.algebra.fishingstore.model.enums.OrderStatus;
+import hr.algebra.fishingstore.model.enums.PaymentMethod;
+import hr.algebra.fishingstore.model.enums.Role;
 import hr.algebra.fishingstore.session.CartSession;
-import hr.algebra.fishingstore.utilities.PathConst;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static hr.algebra.fishingstore.dal.services.AddressService.ADDRESS_NOT_FOUND;
-import static hr.algebra.fishingstore.dal.services.PaymentService.PAYMENT_NOT_FOUND;
 import static hr.algebra.fishingstore.dal.services.UserService.USER_NOT_FOUND;
 
 @Service
@@ -33,25 +31,17 @@ import static hr.algebra.fishingstore.dal.services.UserService.USER_NOT_FOUND;
 public class OrderService {
     public static final String ORDER_NOT_FOUND = "Order Not Found";
     public static final String CART_IS_EMPTY = "Cart is empty";
-
-    private static final String ORDER_ID_Q_PARAM = "?orderId=";
-    private static final String SUCCESS_URL = PathConst.MVC + PathConst.ORDERS + "/paypal/success" + ORDER_ID_Q_PARAM;
-    private static final String CANCEL_URL = PathConst.MVC + PathConst.ORDERS + "/paypal/cancel";
-    private static final String PAL_ORDER_CREATION_FAILED = "PayPal order creation failed";
+    public static final String PRODUCT_NOT_FOUND = "Product not found";
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final OrderRepository orderRepository;
     private final ProductOrderRepository productOrderRepository;
-    private final PaymentRepository paymentRepository;
     private final ModelMapper modelMapper;
     private final PaymentService paymentService;
-    private final PayPalService payPalService;
+    private final PayPalOrderService payPalOrderService;
     private final CartSession cartSession;
     private final ProductRepository productRepository;
-
-    @Value("${app.base-url}")
-    private String baseUrl;
 
     public OrderDto.ResponseDto getById(Long id) {
         Order order = orderRepository.findById(id)
@@ -117,22 +107,9 @@ public class OrderService {
         paymentService.create(paymentCreateDto);
 
         if (dto.getPaymentMethod() == PaymentMethod.PAYPAL)
-            return initPayPalPayment(createdOrder);
+            return payPalOrderService.initPayPalPayment(createdOrder);
 
         return null;
-    }
-
-    private String initPayPalPayment(Order createdOrder) {
-        try {
-            return payPalService.createOrder(
-                    createdOrder.getTotalPrice(),
-                    createdOrder.getId(),
-                    baseUrl + SUCCESS_URL + createdOrder.getId(),
-                    baseUrl + CANCEL_URL+ ORDER_ID_Q_PARAM +createdOrder.getId()
-            );
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(PAL_ORDER_CREATION_FAILED, e);
-        }
     }
 
     private void createProductOrders(List<CartProduct> cartProducts, Order createdOrder) {
@@ -169,7 +146,7 @@ public class OrderService {
         return cartSession.getCartItems().entrySet().stream()
                 .map(entry -> {
                     Product product = productRepository.findById(entry.getKey())
-                            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+                            .orElseThrow(() -> new EntityNotFoundException(PRODUCT_NOT_FOUND));
                     CartProduct cp = new CartProduct();
                     cp.setProduct(product);
                     cp.setQuantity(entry.getValue());
@@ -190,37 +167,11 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
     }
 
-    public OrderDto.ResponseDto confirmPayPalPayment(String payPalOrderId, Long orderId) {
-        try {
-            boolean isSuccessCaptured = payPalService.captureOrder(payPalOrderId);
-            if (isSuccessCaptured) {
-                Payment payment = getPayment(orderId);
-                payment.setPaymentStatus(PaymentStatus.PAID);
-                payment.setPaypalTransactionId(payPalOrderId);
-                payment.setPaidAt(LocalDateTime.now());
-                paymentRepository.save(payment);
-                
-                setOrderStatus(orderId, OrderStatus.CONFIRMED);
-                cartSession.clear();
-            }
-
-            return getById(orderId);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private void setOrderStatus(Long orderId, OrderStatus status) {
+    public void setOrderStatus(Long orderId, OrderStatus status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(ORDER_NOT_FOUND));
         order.setOrderStatus(status);
         orderRepository.save(order);
-    }
-
-    private Payment getPayment(Long orderId) {
-        return paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(PAYMENT_NOT_FOUND));
     }
 
     public OrderDto.ResponseDto update(Long id, OrderDto.EditDto dto) {

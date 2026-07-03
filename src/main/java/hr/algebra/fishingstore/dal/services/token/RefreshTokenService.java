@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -24,14 +25,14 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(token);
         refreshToken.setUser(user);
-        refreshToken.setExpiresAt(LocalDateTime.now().plus(refreshExpiration));
+        refreshToken.setExpiresAt(LocalDateTime.now(Clock.systemUTC()).plus(refreshExpiration));
         return refreshTokenRepository.save(refreshToken);
     }
 
     public boolean isValid(String token) {
         return refreshTokenRepository.findByToken(token)
                 .map(t -> !t.isRevoked() &&
-                        t.getExpiresAt().isAfter(LocalDateTime.now()))
+                        t.getExpiresAt().isAfter(LocalDateTime.now(Clock.systemUTC())))
                 .orElse(false);
     }
 

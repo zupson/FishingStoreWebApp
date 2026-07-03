@@ -1,10 +1,9 @@
 package hr.algebra.fishingstore.utilities;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class PathConst {
-
-    public static final String SEARCH = "/search";
-
-    private PathConst() {}
 
     public static final String ALL = "/**";
     public static final String ID = "/{id}";
@@ -44,4 +43,6 @@ public final class PathConst {
     public static final String UPDATE ="/update" ;
 
     public static final String DELETE = "/delete";
+
+    public static final String SEARCH = "/search";
 }

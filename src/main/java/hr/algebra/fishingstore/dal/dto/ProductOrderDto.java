@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 public class ProductOrderDto {
+    private ProductOrderDto(){}
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

@@ -1,8 +1,6 @@
-package hr.algebra.fishingstore.config;
+package hr.algebra.fishingstore.dal.security;
 
 import hr.algebra.fishingstore.dal.repos.UserRepository;
-import hr.algebra.fishingstore.dal.security.JwtAuthFilter;
-import hr.algebra.fishingstore.dal.services.LoginHistoryService;
 import hr.algebra.fishingstore.model.enums.Role;
 import hr.algebra.fishingstore.utilities.PathConst;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +24,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class ApplicationSecurity {
     public static final String INVALID_CREDENTIALS = "Invalid credentials";
+
     private final JwtAuthFilter jwtAuthFilter;
     private final UserRepository userRepository;
-    private final LoginHistoryService loginHistoryService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -99,31 +97,19 @@ public class SecurityConfig {
                         .successHandler(
                                 (request, response, authentication) -> {
 
-                            loginHistoryService.create(request.getRemoteAddr(), authentication.getName());
+                                    boolean isAdmin = authentication.getAuthorities().stream()
+                                            .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.toAuthority()));
 
-                            boolean isAdmin = authentication.getAuthorities().stream()
-                                    .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.name()));
-
-                            response.sendRedirect(isAdmin
-                                    ? PathConst.MVC + PathConst.ORDERS
-                                    : PathConst.MVC + PathConst.CATEGORIES);
-                        })
+                                    response.sendRedirect(isAdmin
+                                            ? PathConst.MVC + PathConst.ORDERS
+                                            : PathConst.MVC + PathConst.CATEGORIES);
+                                })
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl(PathConst.MVC + PathConst.AUTH + PathConst.LOGOUT)
                         .logoutSuccessUrl(PathConst.MVC + PathConst.PRODUCTS)
                 )
-                .build();
-    }
-
-    @Bean
-    @Order(3)
-    public SecurityFilterChain staticFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .securityMatcher("/uploads/**", "/images/**", "/css/**", "/js/**")
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll())
                 .build();
     }
 }

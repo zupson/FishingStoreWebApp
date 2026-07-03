@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 public class UserDto {
+    private UserDto(){}
 
     @Data
     @NoArgsConstructor

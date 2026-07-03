@@ -31,7 +31,8 @@ public class PaymentMvcController {
     }
 
     @GetMapping(PathConst.ID)
-    public String getById(@PathVariable Long id, Model model) {
+    public String getById(@PathVariable Long id,
+                          Model model) {
         model.addAttribute(MODEL_KEY, paymentService.getById(id));
         return ViewPathConst.PAYMENTS_DETAILS_VIEW;
     }
@@ -54,7 +55,8 @@ public class PaymentMvcController {
     }
 
     @GetMapping(PathConst.EDIT + PathConst.ID)
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           Model model) {
         PaymentDto.ResponseDto payment = paymentService.getById(id);
 
         PaymentDto.EditDto editDto = new PaymentDto.EditDto();

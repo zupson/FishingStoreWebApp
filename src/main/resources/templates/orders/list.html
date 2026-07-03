@@ -15,18 +15,18 @@
         <div class="card-body">
             <form th:action="@{/mvc/orders/search}" method="get" class="row g-2 align-items-end">
                 <div class="col-md-4">
-                    <label class="form-label small text-muted">Korisničko ime</label>
-                    <input type="text" name="username" class="form-control form-control-sm"
+                    <label class="form-label small text-muted" for="username">Korisničko ime</label>
+                    <input type="text" id="username" name="username" class="form-control form-control-sm"
                            placeholder="Pretraži po korisniku" th:value="${param.username}"/>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small text-muted">Od datuma</label>
-                    <input type="date" name="from" class="form-control form-control-sm"
+                    <label class="form-label small text-muted" for="from">Od datuma</label>
+                    <input type="date" id="from" name="from" class="form-control form-control-sm"
                            th:value="${param.from}"/>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small text-muted">Do datuma</label>
-                    <input type="date" name="to" class="form-control form-control-sm"
+                    <label class="form-label small text-muted" for="to">Do datuma</label>
+                    <input type="date" id="to" name="to" class="form-control form-control-sm"
                            th:value="${param.to}"/>
                 </div>
                 <div class="col-md-2 d-flex gap-1">

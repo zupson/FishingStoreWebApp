@@ -16,8 +16,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LoginHistoryService {
-    public static final String LOGIN_HISTORY_NOT_FOUND = "Login history not found.";
-    public static final String USER_NOT_FOUND = "User not found.";
+    private static final String LOGIN_HISTORY_NOT_FOUND = "Login history not found.";
+    private static final String USER_NOT_FOUND = "User not found.";
 
     private final LoginHistoryRepository loginHistoryRepository;
     private final UserRepository userRepository;

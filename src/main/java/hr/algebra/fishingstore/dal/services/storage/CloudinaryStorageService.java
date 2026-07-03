@@ -8,22 +8,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CloudinaryStorageService {
     public static final String PRODUCTS_IMAGE_DIR = "fishing-store/products";
+    public static final String PUBLIC_ID = "public_id";
+    public static final String FOLDER = "folder";
     private final Cloudinary cloudinary;
 
     public String upload(MultipartFile file) {
         try {
             Map<String, Object> result = cloudinary.uploader().upload(
                     file.getBytes(),
-                    ObjectUtils.asMap("folder", PRODUCTS_IMAGE_DIR)
+                    ObjectUtils.asMap(FOLDER, PRODUCTS_IMAGE_DIR)
             );
-            return (String) result.get("public_id");
+            return (String) result.get(PUBLIC_ID);
+
         } catch (IOException e) {
             log.error("Cloudinary upload failed for file: {}", file.getOriginalFilename(), e);
             throw new RuntimeException("Failed to upload image", e);
@@ -40,6 +43,8 @@ public class CloudinaryStorageService {
     }
 
     public String getImageUrl(String publicId) {
-        return cloudinary.url().generate(publicId);
+        return cloudinary
+                .url()
+                .generate(publicId);
     }
 }
