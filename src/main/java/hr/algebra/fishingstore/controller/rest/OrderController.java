@@ -24,7 +24,7 @@ public class OrderController {
     private final PayPalOrderService payPalOrderService;
 
     @GetMapping
-    @PreAuthorize(RoleBasedAccessConst.ADMIN_ONLY)
+    @PreAuthorize(RoleBasedAccessConst.AUTHENTICATED)
     public ResponseEntity<List<OrderDto.ResponseDto>> getAll() {
         return ResponseEntity
                 .ok(orderService.getAll());

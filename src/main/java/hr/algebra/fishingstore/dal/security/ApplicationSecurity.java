@@ -27,6 +27,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class ApplicationSecurity {
     public static final String INVALID_CREDENTIALS = "Invalid credentials";
+    public static final int FORBIDDEN = 403;
+    public static final String ACCESS_DENIED = "Access denied";
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserRepository userRepository;
@@ -58,6 +60,11 @@ public class ApplicationSecurity {
                         .requestMatchers(PathConst.API + PathConst.AUTH + PathConst.LOGOUT).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex->ex.accessDeniedHandler((
+                        request, response, accessDeniedException) -> {
+                    response.setStatus(FORBIDDEN);
+                    response.getWriter().write(ACCESS_DENIED);
+                }))
                 .build();
     }
 
