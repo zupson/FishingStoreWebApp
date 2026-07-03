@@ -2,6 +2,7 @@ package hr.algebra.fishingstore.dal.security;
 
 import hr.algebra.fishingstore.dal.repos.UserRepository;
 import hr.algebra.fishingstore.model.enums.Role;
+import hr.algebra.fishingstore.session.RedirectSession;
 import hr.algebra.fishingstore.utilities.PathConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -62,7 +63,7 @@ public class ApplicationSecurity {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain mvcFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain mvcFilterChain(HttpSecurity http, RedirectSession redirectSession) throws Exception {
         return http
                 .securityMatcher(PathConst.MVC + PathConst.ALL)
                 .csrf(Customizer.withDefaults())
@@ -98,10 +99,17 @@ public class ApplicationSecurity {
                                 (request, response, authentication) -> {
 
                                     boolean isAdmin = authentication.getAuthorities().stream()
-                                            .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.toAuthority()));
+                                            .anyMatch(
+                                                    a -> a.getAuthority().equals(Role.ADMIN.toAuthority()));
 
-                                    response.sendRedirect(isAdmin
-                                            ? PathConst.MVC + PathConst.ORDERS
+                                    if(isAdmin){
+                                        response.sendRedirect(PathConst.MVC + PathConst.ORDERS);
+                                        return;
+                                    }
+
+                                    String redirect = redirectSession.getAndClear();
+                                    response.sendRedirect(redirect != null
+                                            ? redirect
                                             : PathConst.MVC + PathConst.CATEGORIES);
                                 })
                         .permitAll()
