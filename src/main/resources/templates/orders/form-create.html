@@ -9,44 +9,48 @@
         <h4 class="mb-0">Nova narudžba</h4>
         <a th:href="@{/mvc/orders}" class="btn btn-outline-secondary btn-sm">Nazad</a>
     </div>
-    <div class="card shadow-sm" style="max-width: 480px;">
-        <div class="card-body">
-            <p class="text-muted small mb-3">Narudžba se kreira za trenutno prijavljenog korisnika iz aktivne
-                košarice.</p>
-            <form th:action="@{/mvc/orders/create}" th:object="${orders}" method="post">
-                <div class="mb-4">
-                    <label class="form-label fw-semibold" for="addressId">Adresa dostave <span class="text-danger">*</span></label>
-                    <label>
-                        <select class="form-select" id="addressId" th:field="*{addressId}"
-                                th:classappend="${#fields.hasErrors('addressId')} ? 'is-invalid'">
-                            <option value="">-- Odaberi adresu --</option>
-                            <option th:each="address : ${addresses}"
-                                    th:value="${address.id}"
-                                    th:text="${address.street + ', ' + address.city}"></option>
-                        </select>
-                    </label>
-                    <div class="invalid-feedback" th:errors="*{addressId}"></div>
-                    <div class="form-text"><a th:href="@{/mvc/addresses/new}">Dodaj novu adresu</a></div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label fw-semibold" for="cod">Način plaćanja <span class="text-danger">*</span></label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" th:field="*{paymentMethod}"
-                               value="CASH_ON_DELIVERY" id="cod">
-                        <label class="form-check-label" for="cod">Gotovina / Pouzeće</label>
+    <div class="d-flex justify-content-center">
+        <div class="card shadow-sm" style="max-width: 480px;">
+            <div class="card-body">
+
+                <form th:action="@{/mvc/orders/create}" th:object="${orders}" method="post">
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="addressId">Adresa dostave <span
+                                class="text-danger">*</span></label>
+                        <label>
+                            <select class="form-select" id="addressId" th:field="*{addressId}"
+                                    th:classappend="${#fields.hasErrors('addressId')} ? 'is-invalid'">
+                                <option value="">-- Odaberi adresu --</option>
+                                <option th:each="address : ${addresses}"
+                                        th:value="${address.id}"
+                                        th:text="${address.street + ', ' + address.city}"></option>
+                            </select>
+                        </label>
+                        <div class="invalid-feedback" th:errors="*{addressId}"></div>
+                        <div class="form-text"><a th:href="@{/mvc/addresses/new}" class="btn btn-primary">Dodaj novu
+                            adresu</a></div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" th:field="*{paymentMethod}" value="PAYPAL"
-                               id="paypal">
-                        <label class="form-check-label" for="paypal">PayPal</label>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="cod">Način plaćanja <span
+                                class="text-danger">*</span></label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{paymentMethod}"
+                                   value="CASH_ON_DELIVERY" id="cod">
+                            <label class="form-check-label" for="cod">Gotovina / Pouzeće</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{paymentMethod}" value="PAYPAL"
+                                   id="paypal">
+                            <label class="form-check-label" for="paypal">PayPal</label>
+                        </div>
+                        <div class="invalid-feedback d-block" th:errors="*{paymentMethod}"></div>
                     </div>
-                    <div class="invalid-feedback d-block" th:errors="*{paymentMethod}"></div>
-                </div>
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">Naruči</button>
-                    <a th:href="@{/mvc/orders}" class="btn btn-outline-secondary">Odustani</a>
-                </div>
-            </form>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Naruči</button>
+                        <a th:href="@{/mvc/orders}" class="btn btn-outline-secondary">Odustani</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

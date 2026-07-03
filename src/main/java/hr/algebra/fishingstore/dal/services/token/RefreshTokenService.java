@@ -36,13 +36,6 @@ public class RefreshTokenService {
                 .orElse(false);
     }
 
-    public void revoke(String token) {
-        refreshTokenRepository.findByToken(token).ifPresent(t -> {
-            t.setRevoked(true);
-            refreshTokenRepository.save(t);
-        });
-    }
-
     public void delete(String token) {
         refreshTokenRepository.findByToken(token)
                 .ifPresent(refreshTokenRepository::delete);

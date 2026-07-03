@@ -29,6 +29,7 @@ public class PayPalOrderService {
     private static final String SUCCESS_URL = PathConst.MVC + PathConst.ORDERS + "/paypal/success" + ORDER_ID_Q_PARAM;
     private static final String CANCEL_URL = PathConst.MVC + PathConst.ORDERS + "/paypal/cancel";
     private static final String PAL_ORDER_CREATION_FAILED = "PayPal order creation failed";
+
     @Value("${app.base-url}")
     private String baseUrl;
 

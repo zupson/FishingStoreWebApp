@@ -2,7 +2,6 @@ package hr.algebra.fishingstore.dal.services.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import hr.algebra.fishingstore.model.entities.User;
 import jakarta.annotation.PostConstruct;
@@ -66,15 +65,6 @@ public class JwtService {
     public String extractUsername(String token) {
         DecodedJWT decoded = decodeToken(token);
         return decoded.getSubject();
-    }
-
-    public boolean isTokenValid(String token) {
-        try {
-            decodeToken(token);
-            return true;
-        } catch (JWTVerificationException e) {
-            return false;
-        }
     }
 
     public Long extractUserId(String token) {
